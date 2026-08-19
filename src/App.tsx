@@ -776,7 +776,7 @@ function StoryIntroSection() {
               <h2
                 className="
                 paciano-fade-2
-                font-['Cormorant_Garamond']
+                font-['Cormorant_Garamond']                
                 text-[42px]
                 font-[500]
                 uppercase
