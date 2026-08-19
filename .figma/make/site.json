@@ -1,0 +1,11 @@
+{
+  "title": "Paciano — North Bengal",
+  "description": "Create a luxurious, nature-inspired homepage that offers a premium user experience with a responsive design, ideal for brands seeking elegance and tranquility.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

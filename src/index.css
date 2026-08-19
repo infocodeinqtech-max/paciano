@@ -1,0 +1,137 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Raleway:wght@300;400;500;600&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600&display=swap"); */
+
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0b120a;
+  --color-foreground: #f5f0e8;
+  --color-card: #131d11;
+  --color-card-foreground: #f5f0e8;
+  --color-primary: #c9a84c;
+  --color-primary-foreground: #0b120a;
+  --color-secondary: #1e2d1b;
+  --color-secondary-foreground: #d4c9a8;
+  --color-muted: #1a2517;
+  --color-muted-foreground: #8a9b82;
+  --color-accent: #c9a84c;
+  --color-accent-foreground: #0b120a;
+  --color-border: rgba(201, 168, 76, 0.2);
+  --color-ring: #c9a84c;
+
+  --font-cinzel: "Cinzel", serif;
+  --font-playfair: "Playfair Display", serif;
+  --font-raleway: "Raleway", sans-serif;
+}
+
+/* =========================================
+   PACIANO CINEMATIC HERO ANIMATIONS
+========================================= */
+
+@keyframes hero-drift {
+  0% {
+    transform: scale(1.02) translate3d(-0.3%, 0%, 0);
+  }
+
+  50% {
+    transform: scale(1.06) translate3d(0.5%, -0.3%, 0);
+  }
+
+  100% {
+    transform: scale(1.03) translate3d(-0.2%, 0.2%, 0);
+  }
+}
+
+@keyframes mist-float {
+  0% {
+    transform: translateX(-8%) translateY(5%) scale(1);
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+
+  100% {
+    transform: translateX(8%) translateY(-5%) scale(1.15);
+    opacity: 0.18;
+  }
+}
+
+@keyframes golden-glow {
+  0% {
+    transform: translateX(-10%) scale(0.9);
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+
+  100% {
+    transform: translateX(10%) scale(1.1);
+    opacity: 0.25;
+  }
+}
+
+@keyframes text-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom utility classes */
+
+.animate-hero-drift {
+  animation: hero-drift 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.animate-mist {
+  animation: mist-float 18s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.animate-golden-glow {
+  animation: golden-glow 12s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+.animate-text-reveal {
+  animation: text-reveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-text-reveal-delay {
+  animation: text-reveal 1.4s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-text-reveal-delay-2 {
+  animation: text-reveal 1.4s 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0b120a;
+  color: #f5f0e8;
+  font-family: "Raleway", sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
