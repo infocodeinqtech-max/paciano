@@ -392,46 +392,25 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
   );
 }
 
-function PacianoOpening() {
-  const [opened, setOpened] = useState(false);
-
-  useEffect(() => {
-    // Hold the logo briefly before opening
-    const timer = setTimeout(() => {
-      setOpened(true);
-    }, 1200);
-
-    return () => clearTimeout(timer);
-  }, []);
-
+function PacianoOpening({ opened }: { opened: boolean }) {
   return (
     <div
-      className={`paciano-opening ${
-        opened ? "paciano-opening--opened" : ""
-      }`}
+      className={`paciano-opening ${opened ? "paciano-opening--opened" : ""}`}
     >
       {/* Soft cinematic overlay */}
       <div className="paciano-opening-wash" />
 
       {/* Logo */}
       <div className="paciano-logo-curtain">
-
         {/* LEFT HALF */}
         <div className="paciano-curtain-half paciano-curtain-left">
-          <img
-            src={pacianoLogo}
-            alt="Paciano"
-          />
+          <img src={pacianoLogo} alt="Paciano" />
         </div>
 
         {/* RIGHT HALF */}
         <div className="paciano-curtain-half paciano-curtain-right">
-          <img
-            src={pacianoLogo}
-            alt=""
-          />
+          <img src={pacianoLogo} alt="" />
         </div>
-
       </div>
 
       {/* Warm light behind logo */}
@@ -439,7 +418,6 @@ function PacianoOpening() {
     </div>
   );
 }
-
 function AmbientSound() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [soundOn, setSoundOn] = useState(false);
@@ -514,12 +492,7 @@ function AmbientSound() {
 
   return (
     <>
-      <audio
-        ref={audioRef}
-        src={pacianoMorningAudio}
-        preload="auto"
-        loop
-      />
+      <audio ref={audioRef} src={pacianoMorningAudio} preload="auto" loop />
 
       <button
         type="button"
@@ -528,9 +501,7 @@ function AmbientSound() {
           toggleSound();
         }}
         aria-label={
-          soundOn
-            ? "Turn ambient sound off"
-            : "Turn ambient sound on"
+          soundOn ? "Turn ambient sound off" : "Turn ambient sound on"
         }
         className="
           fixed
@@ -565,7 +536,6 @@ function AmbientSound() {
         "
       >
         <span className="relative flex items-center justify-center">
-
           {soundOn && (
             <>
               <span
@@ -640,122 +610,34 @@ function AmbientSound() {
     </>
   );
 }
-// function AmbientSound() {
-//   const audioRef = useRef<HTMLAudioElement | null>(null);
-//   const [soundOn, setSoundOn] = useState(false);
-
-//   const toggleSound = async () => {
-//     const audio = audioRef.current;
-
-//     if (!audio) {
-//       console.error("Audio element not found");
-//       return;
-//     }
-
-//     console.log("Audio source:", audio.src);
-//     console.log("Audio readyState:", audio.readyState);
-
-//     try {
-//       if (audio.paused) {
-//         audio.volume = 0.12;
-
-//         await audio.play();
-
-//         setSoundOn(true);
-
-//         console.log("✓ Paciano ambience started");
-//       } else {
-//         audio.pause();
-//         setSoundOn(false);
-
-//         console.log("✓ Paciano ambience stopped");
-//       }
-//     } catch (error) {
-//       console.error("✗ Audio playback failed:", error);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <audio
-//         ref={audioRef}
-//         src={pacianoMorningAudio}
-//         preload="auto"
-//         loop
-//       />
-
-//       <button
-//         type="button"
-//         onClick={toggleSound}
-//         aria-label={soundOn ? "Turn sound off" : "Turn sound on"}
-//         className="
-//           fixed
-//           bottom-7
-//           right-7
-//           z-[999]
-//           flex
-//           h-11
-//           w-11
-//           items-center
-//           justify-center
-//           rounded-full
-//           border
-//           border-white/25
-//           bg-black/25
-//           backdrop-blur-xl
-//           transition-all
-//           duration-500
-//           hover:border-[#c9a84c]
-//           hover:bg-black/40
-//         "
-//       >
-//         <span className="flex items-center gap-[2px]">
-//           <span
-//             className={`w-[1px] bg-[#d7b85c] ${
-//               soundOn ? "h-2 animate-pulse" : "h-1.5"
-//             }`}
-//           />
-
-//           <span
-//             className={`w-[1px] bg-[#d7b85c] ${
-//               soundOn ? "h-4 animate-pulse" : "h-2.5"
-//             }`}
-//           />
-
-//           <span
-//             className={`w-[1px] bg-[#d7b85c] ${
-//               soundOn ? "h-2.5 animate-pulse" : "h-1.5"
-//             }`}
-//           />
-//         </span>
-//       </button>
-//     </>
-//   );
-// }
-// ─── Hero Section ─────────────────────────────────────────────────────────────
 
 function HeroSection() {
+  const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpened(true);
+    }, 1800);
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <section className="relative min-h-screen w-full overflow-hidden flex items-center">
-       <PacianoOpening />
-        <AmbientSound />
+      <PacianoOpening opened={opened} />
+
+      <AmbientSound />
       {/* BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden">
         <img
           src={bannerImage}
           alt="Paciano resort beside a golden river"
-          // className="
-          //   absolute inset-0
-          //   h-full w-full
-          //   object-cover
-          //   animate-hero-drift
-          // "
-          className="
-              paciano-hero-image
-              absolute inset-0
-              h-full w-full
-              object-cover
-            "
+          className={`
+            paciano-hero-image
+            absolute inset-0
+            h-full w-full
+            object-cover
+            ${opened ? "paciano-hero-image--active" : ""}
+          `}
           style={{
             objectPosition: "30% center",
           }}
@@ -794,10 +676,9 @@ function HeroSection() {
           "
           style={{
             // background:
-              // "radial-gradient(ellipse at center, rgba(235,240,225,0.28) 0%, rgba(210,220,205,0.12) 35%, transparent 70%)",
-               background:
-      "radial-gradient(ellipse at center, rgba(235,240,225,0.22) 0%, rgba(210,220,205,0.08) 35%, transparent 70%)",
-             
+            // "radial-gradient(ellipse at center, rgba(235,240,225,0.28) 0%, rgba(210,220,205,0.12) 35%, transparent 70%)",
+            background:
+              "radial-gradient(ellipse at center, rgba(235,240,225,0.22) 0%, rgba(210,220,205,0.08) 35%, transparent 70%)",
           }}
         />
 
@@ -813,7 +694,7 @@ function HeroSection() {
           //   animate-golden-glow
           //   blur-3xl
           // "
-           className="
+          className="
     absolute
     top-[-20%]
     left-[20%]
@@ -827,7 +708,7 @@ function HeroSection() {
             // background:
             //   "radial-gradient(ellipse, rgba(230,178,82,0.20) 0%, rgba(230,178,82,0.06) 40%, transparent 70%)",
             background:
-      "radial-gradient(ellipse, rgba(230,178,82,0.20) 0%, rgba(230,178,82,0.06) 40%, transparent 70%)",
+              "radial-gradient(ellipse, rgba(230,178,82,0.20) 0%, rgba(230,178,82,0.06) 40%, transparent 70%)",
           }}
         />
       </div>
