@@ -41,3 +41,20 @@
 .font-paciano-display {
   font-family: "Cormorant Garamond", serif;
 }
+
+@keyframes paciano-wave {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.animate-paciano-wave {
+  animation: paciano-wave 900ms ease-in-out infinite;
+}
