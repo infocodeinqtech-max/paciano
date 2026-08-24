@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import bannerImage from "@/images/ChatGPT_Image_Aug_18__2026__01_37_01_PM-1.png";
 import pacianoLogo from "@/images/paciano-logo.png";
 import storyImage from "@/images/story.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCanadianMapleLeaf } from "@fortawesome/free-brands-svg-icons";
+import pacianoMorningAudio from "@/assets/audio/paciano-morning-soothing.mp3";
 
 const NAV_LINKS = [
   "Stay",
@@ -390,22 +391,371 @@ function Navbar({ scrolled }: { scrolled: boolean }) {
     </nav>
   );
 }
+
+function PacianoOpening() {
+  const [opened, setOpened] = useState(false);
+
+  useEffect(() => {
+    // Hold the logo briefly before opening
+    const timer = setTimeout(() => {
+      setOpened(true);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div
+      className={`paciano-opening ${
+        opened ? "paciano-opening--opened" : ""
+      }`}
+    >
+      {/* Soft cinematic overlay */}
+      <div className="paciano-opening-wash" />
+
+      {/* Logo */}
+      <div className="paciano-logo-curtain">
+
+        {/* LEFT HALF */}
+        <div className="paciano-curtain-half paciano-curtain-left">
+          <img
+            src={pacianoLogo}
+            alt="Paciano"
+          />
+        </div>
+
+        {/* RIGHT HALF */}
+        <div className="paciano-curtain-half paciano-curtain-right">
+          <img
+            src={pacianoLogo}
+            alt=""
+          />
+        </div>
+
+      </div>
+
+      {/* Warm light behind logo */}
+      <div className="paciano-opening-glow" />
+    </div>
+  );
+}
+
+function AmbientSound() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [soundOn, setSoundOn] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+
+  const startSound = async () => {
+    const audio = audioRef.current;
+
+    if (!audio || hasStarted) return;
+
+    try {
+      audio.volume = 0.14;
+      audio.muted = false;
+
+      await audio.play();
+
+      setSoundOn(true);
+      setHasStarted(true);
+
+      console.log("🌿 PACIANO MORNING AMBIENCE STARTED");
+    } catch (error) {
+      console.log("Browser blocked autoplay:", error);
+    }
+  };
+
+  const toggleSound = async () => {
+    const audio = audioRef.current;
+
+    if (!audio) return;
+
+    try {
+      if (audio.paused) {
+        audio.volume = 0.14;
+        audio.muted = false;
+
+        await audio.play();
+
+        setSoundOn(true);
+        setHasStarted(true);
+      } else {
+        audio.pause();
+        setSoundOn(false);
+      }
+    } catch (error) {
+      console.error("Audio error:", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      startSound();
+    };
+
+    window.addEventListener("click", handleFirstInteraction, {
+      once: true,
+    });
+
+    window.addEventListener("touchstart", handleFirstInteraction, {
+      once: true,
+    });
+
+    window.addEventListener("keydown", handleFirstInteraction, {
+      once: true,
+    });
+
+    return () => {
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+    };
+  }, [hasStarted]);
+
+  return (
+    <>
+      <audio
+        ref={audioRef}
+        src={pacianoMorningAudio}
+        preload="auto"
+        loop
+      />
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleSound();
+        }}
+        aria-label={
+          soundOn
+            ? "Turn ambient sound off"
+            : "Turn ambient sound on"
+        }
+        className="
+          fixed
+          bottom-7
+          right-7
+          z-[999999]
+          pointer-events-auto
+
+          flex
+          h-12
+          w-12
+          items-center
+          justify-center
+
+          rounded-full
+          border
+          border-white/30
+
+          bg-black/35
+          backdrop-blur-xl
+
+          shadow-[0_8px_30px_rgba(0,0,0,0.25)]
+
+          transition-all
+          duration-500
+
+          hover:scale-105
+          hover:border-[#c9a84c]
+          hover:bg-black/50
+
+          active:scale-95
+        "
+      >
+        <span className="relative flex items-center justify-center">
+
+          {soundOn && (
+            <>
+              <span
+                className="
+                  absolute
+                  h-7
+                  w-7
+                  rounded-full
+                  border
+                  border-[#c9a84c]/40
+                  animate-ping
+                "
+              />
+
+              <span
+                className="
+                  absolute
+                  h-9
+                  w-9
+                  rounded-full
+                  border
+                  border-[#c9a84c]/15
+                  animate-pulse
+                "
+              />
+            </>
+          )}
+
+          <span className="relative z-10 flex items-center gap-[3px]">
+            <span
+              className={`
+                w-[2px]
+                rounded-full
+                bg-[#d7b85c]
+                transition-all duration-300
+                ${soundOn ? "h-3 animate-pulse" : "h-1.5"}
+              `}
+            />
+
+            <span
+              className={`
+                w-[2px]
+                rounded-full
+                bg-[#d7b85c]
+                transition-all duration-300
+                ${soundOn ? "h-5 animate-pulse" : "h-2"}
+              `}
+            />
+
+            <span
+              className={`
+                w-[2px]
+                rounded-full
+                bg-[#d7b85c]
+                transition-all duration-300
+                ${soundOn ? "h-3.5 animate-pulse" : "h-1.5"}
+              `}
+            />
+
+            <span
+              className={`
+                w-[2px]
+                rounded-full
+                bg-[#d7b85c]
+                transition-all duration-300
+                ${soundOn ? "h-2.5 animate-pulse" : "h-1"}
+              `}
+            />
+          </span>
+        </span>
+      </button>
+    </>
+  );
+}
+// function AmbientSound() {
+//   const audioRef = useRef<HTMLAudioElement | null>(null);
+//   const [soundOn, setSoundOn] = useState(false);
+
+//   const toggleSound = async () => {
+//     const audio = audioRef.current;
+
+//     if (!audio) {
+//       console.error("Audio element not found");
+//       return;
+//     }
+
+//     console.log("Audio source:", audio.src);
+//     console.log("Audio readyState:", audio.readyState);
+
+//     try {
+//       if (audio.paused) {
+//         audio.volume = 0.12;
+
+//         await audio.play();
+
+//         setSoundOn(true);
+
+//         console.log("✓ Paciano ambience started");
+//       } else {
+//         audio.pause();
+//         setSoundOn(false);
+
+//         console.log("✓ Paciano ambience stopped");
+//       }
+//     } catch (error) {
+//       console.error("✗ Audio playback failed:", error);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <audio
+//         ref={audioRef}
+//         src={pacianoMorningAudio}
+//         preload="auto"
+//         loop
+//       />
+
+//       <button
+//         type="button"
+//         onClick={toggleSound}
+//         aria-label={soundOn ? "Turn sound off" : "Turn sound on"}
+//         className="
+//           fixed
+//           bottom-7
+//           right-7
+//           z-[999]
+//           flex
+//           h-11
+//           w-11
+//           items-center
+//           justify-center
+//           rounded-full
+//           border
+//           border-white/25
+//           bg-black/25
+//           backdrop-blur-xl
+//           transition-all
+//           duration-500
+//           hover:border-[#c9a84c]
+//           hover:bg-black/40
+//         "
+//       >
+//         <span className="flex items-center gap-[2px]">
+//           <span
+//             className={`w-[1px] bg-[#d7b85c] ${
+//               soundOn ? "h-2 animate-pulse" : "h-1.5"
+//             }`}
+//           />
+
+//           <span
+//             className={`w-[1px] bg-[#d7b85c] ${
+//               soundOn ? "h-4 animate-pulse" : "h-2.5"
+//             }`}
+//           />
+
+//           <span
+//             className={`w-[1px] bg-[#d7b85c] ${
+//               soundOn ? "h-2.5 animate-pulse" : "h-1.5"
+//             }`}
+//           />
+//         </span>
+//       </button>
+//     </>
+//   );
+// }
 // ─── Hero Section ─────────────────────────────────────────────────────────────
 
 function HeroSection() {
   return (
     <section className="relative min-h-screen w-full overflow-hidden flex items-center">
+       <PacianoOpening />
+        <AmbientSound />
       {/* BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden">
         <img
           src={bannerImage}
           alt="Paciano resort beside a golden river"
+          // className="
+          //   absolute inset-0
+          //   h-full w-full
+          //   object-cover
+          //   animate-hero-drift
+          // "
           className="
-            absolute inset-0
-            h-full w-full
-            object-cover
-            animate-hero-drift
-          "
+              paciano-hero-image
+              absolute inset-0
+              h-full w-full
+              object-cover
+            "
           style={{
             objectPosition: "30% center",
           }}
@@ -422,6 +772,16 @@ function HeroSection() {
 
         {/* FLOATING MIST */}
         <div
+          // className="
+          //   absolute
+          //   left-[-15%]
+          //   bottom-[8%]
+          //   h-[38%]
+          //   w-[130%]
+          //   pointer-events-none
+          //   animate-mist
+          //   blur-3xl
+          // "
           className="
             absolute
             left-[-15%]
@@ -429,30 +789,45 @@ function HeroSection() {
             h-[38%]
             w-[130%]
             pointer-events-none
-            animate-mist
+            paciano-morning-mist
             blur-3xl
           "
           style={{
-            background:
-              "radial-gradient(ellipse at center, rgba(235,240,225,0.28) 0%, rgba(210,220,205,0.12) 35%, transparent 70%)",
+            // background:
+              // "radial-gradient(ellipse at center, rgba(235,240,225,0.28) 0%, rgba(210,220,205,0.12) 35%, transparent 70%)",
+               background:
+      "radial-gradient(ellipse at center, rgba(235,240,225,0.22) 0%, rgba(210,220,205,0.08) 35%, transparent 70%)",
+             
           }}
         />
 
         {/* GOLDEN LIGHT */}
         <div
-          className="
-            absolute
-            top-[-20%]
-            left-[20%]
-            h-[80%]
-            w-[55%]
-            pointer-events-none
-            animate-golden-glow
-            blur-3xl
-          "
+          // className="
+          //   absolute
+          //   top-[-20%]
+          //   left-[20%]
+          //   h-[80%]
+          //   w-[55%]
+          //   pointer-events-none
+          //   animate-golden-glow
+          //   blur-3xl
+          // "
+           className="
+    absolute
+    top-[-20%]
+    left-[20%]
+    h-[80%]
+    w-[55%]
+    pointer-events-none
+    paciano-sun-glow
+    blur-3xl
+  "
           style={{
+            // background:
+            //   "radial-gradient(ellipse, rgba(230,178,82,0.20) 0%, rgba(230,178,82,0.06) 40%, transparent 70%)",
             background:
-              "radial-gradient(ellipse, rgba(230,178,82,0.20) 0%, rgba(230,178,82,0.06) 40%, transparent 70%)",
+      "radial-gradient(ellipse, rgba(230,178,82,0.20) 0%, rgba(230,178,82,0.06) 40%, transparent 70%)",
           }}
         />
       </div>
@@ -1911,7 +2286,7 @@ function ExperiencesSection() {
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-14 lg:mb-20">
           <div className="mb-4">
-            <LeafIcon size={20} color="#c9a84c" />
+            {/* <LeafIcon size={20} color="#c9a84c" /> */}
           </div>
           <h2
             className="text-[#c9a84c] font-semibold tracking-[0.12em] mb-4"
@@ -2132,7 +2507,7 @@ function EscapeCTASection() {
       <div className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-16 py-24 lg:py-32 w-full">
         <div className="flex flex-col items-center text-center max-w-[600px] mx-auto">
           <div className="mb-6">
-            <LeafIcon size={24} color="#c9a84c" />
+            {/* <LeafIcon size={24} color="#c9a84c" /> */}
           </div>
           <h2
             className="text-[#f5f0e8] leading-[1.1] mb-5 font-semibold tracking-[0.04em]"
