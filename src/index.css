@@ -1,8 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap');
-/* @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Raleway:wght@300;400;500;600&display=swap"); */
-/* @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap");
 
 @import "tailwindcss";
 
@@ -11,20 +7,19 @@
   --color-foreground: #f5f0e8;
   --color-card: #131d11;
   --color-card-foreground: #f5f0e8;
-  --color-primary: #c9a84c;
+  --color-primary: #8faa42;
   --color-primary-foreground: #0b120a;
   --color-secondary: #1e2d1b;
   --color-secondary-foreground: #d4c9a8;
   --color-muted: #1a2517;
   --color-muted-foreground: #8a9b82;
-  --color-accent: #c9a84c;
+  --color-accent: #8faa42;
   --color-accent-foreground: #0b120a;
-  --color-border: rgba(201, 168, 76, 0.2);
-  --color-ring: #c9a84c;
+  --color-border: rgba(143, 170, 66, 0.2);
+  --color-ring: #8faa42;
 
-  --font-cinzel: "Cinzel", serif;
-  --font-playfair: "Playfair Display", serif;
-  --font-raleway: "Raleway", sans-serif;
+  --font-cormorant: "Cormorant Garamond", serif;
+  --font-manrope: "Manrope", sans-serif;
 }
 
 :root {
@@ -34,15 +29,7 @@
   --paciano-text: #f7f4eb;
 }
 
-.font-paciano-ui {
-  font-family: "Manrope", sans-serif;
-}
-
-.font-paciano-display {
-  font-family: "Cormorant Garamond", serif;
-}
-
-@keyframes paciano-wave {
+/* @keyframes paciano-wave {
   0%,
   100% {
     transform: scaleY(0.55);
@@ -57,4 +44,4 @@
 
 .animate-paciano-wave {
   animation: paciano-wave 900ms ease-in-out infinite;
-}
+} */

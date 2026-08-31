@@ -1,10 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import bannerImage from "@/images/hero.png";
-import pacianoLogo from "@/images/paciano-logo.png";
-import storyImage from "@/images/story.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCanadianMapleLeaf } from "@fortawesome/free-brands-svg-icons";
-import pacianoMorningAudio from "@/assets/audio/paciano-morning-soothing.mp3";
+import { useEffect, useState } from "react";
+
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 
@@ -16,7 +11,9 @@ export default function App() {
       setScrolled(window.scrollY > 60);
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener("scroll", onScroll);
@@ -27,7 +24,6 @@ export default function App() {
     <>
       {/* FIXED NAVBAR */}
       <Navbar scrolled={scrolled} />
-
 
       {/* ENTIRE PACIANO JOURNEY */}
       <main className="overflow-hidden bg-[#ece6d8]">
