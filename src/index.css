@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Lora:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap");
 
 @import "tailwindcss";
 
@@ -19,6 +19,7 @@
   --color-ring: #8faa42;
 
   --font-cormorant: "Cormorant Garamond", serif;
+  --font-lora: "Lora", serif;
   --font-manrope: "Manrope", sans-serif;
 }
 
@@ -29,19 +30,122 @@
   --paciano-text: #f7f4eb;
 }
 
-/* @keyframes paciano-wave {
-  0%,
-  100% {
-    transform: scaleY(0.55);
-    opacity: 0.45;
+@keyframes paciano-organic-edge {
+  0% {
+    transform: translate3d(0, 0, 0) scaleX(1);
   }
 
   50% {
-    transform: scaleY(1);
-    opacity: 1;
+    transform: translate3d(-0.35%, -2px, 0) scaleX(1.006);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scaleX(1);
   }
 }
 
-.animate-paciano-wave {
-  animation: paciano-wave 900ms ease-in-out infinite;
-} */
+@keyframes pacianoOrganicEdge {
+  0% {
+    transform: translate3d(0, 0, 0) scaleX(1);
+  }
+
+  50% {
+    transform: translate3d(-0.4%, -3px, 0) scaleX(1.008);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scaleX(1);
+  }
+}
+
+.paciano-organic-edge {
+  animation: pacianoOrganicEdge 14s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+/* =========================================================
+   PACIANO — ORGANIC HERO → ABOUT TRANSITION
+========================================================= */
+
+/* =========================================================
+   PACIANO — ORGANIC HERO → ABOUT TRANSITION
+========================================================= */
+
+@keyframes paciano-mist {
+  0% {
+    opacity: 0.42;
+    transform: translate3d(0, 4px, 0) scaleX(1);
+  }
+
+  50% {
+    opacity: 0.62;
+    transform: translate3d(-0.6%, -2px, 0) scaleX(1.015);
+  }
+
+  100% {
+    opacity: 0.42;
+    transform: translate3d(0, 4px, 0) scaleX(1);
+  }
+}
+
+.animate-paciano-mist {
+  animation: paciano-mist 12s ease-in-out infinite;
+}
+
+@keyframes paciano-edge {
+  0% {
+    transform: translate3d(0, 0, 0) scaleX(1);
+  }
+
+  50% {
+    transform: translate3d(-0.35%, -4px, 0) scaleX(1.008);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scaleX(1);
+  }
+}
+
+.animate-paciano-edge {
+  transform-origin: center bottom;
+  animation: paciano-edge 16s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes paciano-organic-edge {
+  0% {
+    transform: translate3d(0, 0, 0) scaleX(1);
+  }
+
+  50% {
+    transform: translate3d(-0.35%, -3px, 0) scaleX(1.006);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scaleX(1);
+  }
+}
+
+.animate-paciano-organic-edge {
+  transform-origin: center bottom;
+  animation: paciano-organic-edge 18s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes paciano-about-image {
+  0% {
+    transform: translate3d(0, 8px, 0) scale(1.015);
+  }
+
+  50% {
+    transform: translate3d(-0.6%, 0, 0) scale(1.025);
+  }
+
+  100% {
+    transform: translate3d(0, 8px, 0) scale(1.015);
+  }
+}
+
+.animate-paciano-about-image {
+  animation: paciano-about-image 18s ease-in-out infinite;
+}

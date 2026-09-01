@@ -729,34 +729,35 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section
-      id="home"
-      className="
-        relative
-        h-screen
-        min-h-[680px]
-        w-full
-        overflow-hidden
-        bg-[#07100a]
-      "
-    >
-      {/* =====================================================
+    <>
+      <section
+        id="home"
+        className="
+      relative
+      h-screen
+      min-h-[680px]
+      w-full
+      overflow-visible
+      bg-[#07100a]
+    "
+      >
+        {/* =====================================================
           LANDSCAPE
       ===================================================== */}
 
-      <div
-        className="
+        <div
+          className="
           absolute
           inset-0
           overflow-hidden
         "
-      >
-        <img
-          ref={imageRef}
-          src={bannerImage}
-          alt="Paciano riverside resort"
-          draggable={false}
-          className="
+        >
+          <img
+            ref={imageRef}
+            src={bannerImage}
+            alt="Paciano riverside resort"
+            draggable={false}
+            className="
             absolute
             inset-0
             h-full
@@ -769,14 +770,14 @@ export default function HeroSection() {
 
             will-change-transform
           "
-        />
+          />
 
-        {/* =================================================
+          {/* =================================================
             LEFT / LEFT-MIDDLE CINEMATIC SHADOW
         ================================================= */}
 
-        <div
-          className="
+          <div
+            className="
             pointer-events-none
             absolute
             inset-0
@@ -784,16 +785,16 @@ export default function HeroSection() {
 
             bg-[radial-gradient(ellipse_42%_64%_at_26%_48%,rgba(2,10,6,0.52)_0%,rgba(2,10,6,0.38)_32%,rgba(2,10,6,0.18)_55%,transparent_78%)]
           "
-        />
+          />
 
-        {/* =================================================
+          {/* =================================================
             UPPER LEFT SHADOW
 
             Keeps logo area dark.
         ================================================= */}
 
-        <div
-          className="
+          <div
+            className="
             pointer-events-none
             absolute
             inset-0
@@ -801,14 +802,14 @@ export default function HeroSection() {
 
             bg-[radial-gradient(ellipse_42%_48%_at_8%_12%,rgba(2,11,7,0.62)_0%,rgba(2,11,7,0.40)_42%,transparent_75%)]
           "
-        />
+          />
 
-        {/* =================================================
+          {/* =================================================
             SUNRISE WARMTH
         ================================================= */}
 
-        <div
-          className="
+          <div
+            className="
             pointer-events-none
             absolute
             inset-0
@@ -816,15 +817,15 @@ export default function HeroSection() {
 
             bg-[radial-gradient(ellipse_24%_28%_at_40%_43%,rgba(255,210,145,0.14)_0%,rgba(255,210,145,0.07)_28%,transparent_72%)]
           "
-        />
+          />
 
-        {/* =================================================
+          {/* =================================================
             ANIMATED SUNRISE
         ================================================= */}
 
-        <div
-          ref={sunriseRef}
-          className="
+          <div
+            ref={sunriseRef}
+            className="
             pointer-events-none
             absolute
             inset-0
@@ -836,15 +837,15 @@ export default function HeroSection() {
 
             will-change-transform
           "
-        />
+          />
 
-        {/* =================================================
+          {/* =================================================
             ATMOSPHERE
         ================================================= */}
 
-        <div
-          ref={atmosphereRef}
-          className="
+          <div
+            ref={atmosphereRef}
+            className="
             pointer-events-none
             absolute
             inset-0
@@ -852,14 +853,14 @@ export default function HeroSection() {
 
             bg-[linear-gradient(180deg,rgba(3,12,7,0.12),transparent_38%,rgba(3,12,7,0.08))]
           "
-        />
+          />
 
-        {/* =================================================
+          {/* =================================================
             BOTTOM CINEMATIC DEPTH
         ================================================= */}
 
-        <div
-          className="
+          <div
+            className="
             pointer-events-none
             absolute
             inset-x-0
@@ -871,10 +872,10 @@ export default function HeroSection() {
             from-black/25
             to-transparent
           "
-        />
-      </div>
+          />
+        </div>
 
-      {/* =====================================================
+        {/* =====================================================
           HERO CONTENT
 
           Starts invisible.
@@ -882,9 +883,9 @@ export default function HeroSection() {
           Timeline controls the reveal.
       ===================================================== */}
 
-      <div
-        ref={heroContentRef}
-        className="
+        <div
+          ref={heroContentRef}
+          className="
           absolute
           left-[5%]
           top-1/2
@@ -906,27 +907,27 @@ export default function HeroSection() {
           max-sm:right-[7%]
           max-sm:w-auto
         "
-      >
-        {/* EYEBROW */}
+        >
+          {/* EYEBROW */}
 
-        <div
-          className="
+          <div
+            className="
             mb-5
             flex
             items-center
             gap-3
           "
-        >
-          <span
-            className="
+          >
+            <span
+              className="
               h-px
               w-[42px]
               bg-[#9dbb47]
             "
-          />
+            />
 
-          <span
-            className="
+            <span
+              className="
               font-manrope
               text-[10px]
               font-medium
@@ -934,15 +935,15 @@ export default function HeroSection() {
               tracking-[0.22em]
               text-[#9dbb47]
             "
-          >
-            Retreat. Reconnect. Rejuvenate.
-          </span>
-        </div>
+            >
+              Retreat. Reconnect. Rejuvenate.
+            </span>
+          </div>
 
-        {/* TITLE */}
+          {/* TITLE */}
 
-        <h1
-          className="
+          <h1
+            className="
             font-cormorant
             text-[58px]
             font-medium
@@ -956,61 +957,61 @@ export default function HeroSection() {
 
             max-sm:text-[47px]
           "
-        >
-          <span className="block">Where Nature</span>
+          >
+            <span className="block">Where Nature</span>
 
-          <span
-            className="
+            <span
+              className="
               mt-1
               block
               italic
               text-[#9dbb47]
             "
-          >
-            Welcomes You
-          </span>
-        </h1>
+            >
+              Welcomes You
+            </span>
+          </h1>
 
-        {/* DECORATIVE LINE */}
+          {/* DECORATIVE LINE */}
 
-        <div
-          className="
+          <div
+            className="
             mt-8
             flex
             items-center
             gap-3
           "
-        >
-          <span
-            className="
+          >
+            <span
+              className="
               h-px
               w-[48px]
               bg-[#9dbb47]/80
             "
-          />
+            />
 
-          <span
-            className="
+            <span
+              className="
               h-[6px]
               w-[6px]
               rotate-45
               bg-[#9dbb47]
             "
-          />
+            />
 
-          <span
-            className="
+            <span
+              className="
               h-px
               w-[48px]
               bg-[#9dbb47]/30
             "
-          />
-        </div>
+            />
+          </div>
 
-        {/* DESCRIPTION */}
+          {/* DESCRIPTION */}
 
-        <p
-          className="
+          <p
+            className="
             mt-7
             max-w-[420px]
 
@@ -1022,15 +1023,15 @@ export default function HeroSection() {
 
             sm:text-[15px]
           "
-        >
-          A quiet escape beside the river, surrounded by rolling hills, lush tea
-          gardens and the gentle rhythm of nature.
-        </p>
+          >
+            A quiet escape beside the river, surrounded by rolling hills, lush
+            tea gardens and the gentle rhythm of nature.
+          </p>
 
-        {/* ACTIONS */}
+          {/* ACTIONS */}
 
-        <div
-          className="
+          <div
+            className="
             mt-8
             flex
             items-center
@@ -1040,12 +1041,12 @@ export default function HeroSection() {
             max-sm:items-start
             max-sm:gap-5
           "
-        >
-          {/* EXPLORE */}
+          >
+            {/* EXPLORE */}
 
-          <a
-            href="#experiences"
-            className="
+            <a
+              href="#experiences"
+              className="
               group
               flex
               items-center
@@ -1058,9 +1059,9 @@ export default function HeroSection() {
               tracking-[0.08em]
               text-white
             "
-          >
-            <span
-              className="
+            >
+              <span
+                className="
                 flex
                 h-[46px]
                 w-[46px]
@@ -1082,78 +1083,78 @@ export default function HeroSection() {
                 group-hover:bg-[#8faa42]
                 group-hover:text-[#102619]
               "
-            >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M5 12H18"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M5 12H18"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
 
-                <path
-                  d="M13 7L18 12L13 17"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
+                  <path
+                    d="M13 7L18 12L13 17"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
 
-            <span>Explore the Experience</span>
-          </a>
+              <span>Explore the Experience</span>
+            </a>
 
-          {/* SOUND */}
+            {/* SOUND */}
 
-          <button
-            type="button"
-            onClick={toggleAudio}
-            className="
+            <button
+              type="button"
+              onClick={toggleAudio}
+              className="
               group
               flex
               items-center
               gap-3
               text-left
             "
-          >
-            {/* BARS */}
+            >
+              {/* BARS */}
 
-            <span
-              className="
+              <span
+                className="
                 flex
                 h-[32px]
                 items-center
                 gap-[3px]
               "
-            >
-              {[12, 22, 30, 18, 27, 14, 22].map((height, index) => (
-                <span
-                  key={index}
-                  ref={(el) => {
-                    if (el) {
-                      soundBarsRef.current[index] = el;
-                    }
-                  }}
-                  className="
+              >
+                {[12, 22, 30, 18, 27, 14, 22].map((height, index) => (
+                  <span
+                    key={index}
+                    ref={(el) => {
+                      if (el) {
+                        soundBarsRef.current[index] = el;
+                      }
+                    }}
+                    className="
                       w-[2px]
                       rounded-full
                       bg-[#9dbb47]
                       origin-center
                       will-change-transform
                     "
-                  style={{
-                    height: `${height}px`,
-                  }}
-                />
-              ))}
-            </span>
+                    style={{
+                      height: `${height}px`,
+                    }}
+                  />
+                ))}
+              </span>
 
-            {/* LABEL */}
+              {/* LABEL */}
 
-            <span>
-              <span
-                className="
+              <span>
+                <span
+                  className="
                   block
                   font-manrope
                   text-[11px]
@@ -1162,12 +1163,12 @@ export default function HeroSection() {
                   tracking-[0.08em]
                   text-white
                 "
-              >
-                Sounds of Nature
-              </span>
+                >
+                  Sounds of Nature
+                </span>
 
-              <span
-                className="
+                <span
+                  className="
                   mt-1
                   block
                   font-manrope
@@ -1175,15 +1176,15 @@ export default function HeroSection() {
                   tracking-[0.03em]
                   text-white/60
                 "
-              >
-                River · Birds · Wind
+                >
+                  River · Birds · Wind
+                </span>
               </span>
-            </span>
 
-            {/* CONTROL */}
+              {/* CONTROL */}
 
-            <span
-              className="
+              <span
+                className="
                 ml-1
                 flex
                 h-[34px]
@@ -1204,39 +1205,39 @@ export default function HeroSection() {
 
                 group-hover:border-[#9dbb47]
               "
-            >
-              {isPlaying ? (
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <rect x="6" y="5" width="4" height="14" />
+              >
+                {isPlaying ? (
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <rect x="6" y="5" width="4" height="14" />
 
-                  <rect x="14" y="5" width="4" height="14" />
-                </svg>
-              ) : (
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M8 5L19 12L8 19V5Z" />
-                </svg>
-              )}
-            </span>
-          </button>
+                    <rect x="14" y="5" width="4" height="14" />
+                  </svg>
+                ) : (
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M8 5L19 12L8 19V5Z" />
+                  </svg>
+                )}
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* =====================================================
+        {/* =====================================================
           CINEMATIC LOGO
       ===================================================== */}
 
-      <div
-        className="
+        <div
+          className="
           pointer-events-none
           absolute
           inset-0
@@ -1248,10 +1249,10 @@ export default function HeroSection() {
 
           overflow-hidden
         "
-      >
-        <div
-          ref={logoStageRef}
-          className="
+        >
+          <div
+            ref={logoStageRef}
+            className="
             relative
 
             h-[250px]
@@ -1274,14 +1275,14 @@ export default function HeroSection() {
 
             will-change-transform
           "
-        >
-          {/* =================================================
+          >
+            {/* =================================================
               LOGO ATMOSPHERIC LIGHT
           ================================================= */}
 
-          <div
-            ref={logoGlowRef}
-            className="
+            <div
+              ref={logoGlowRef}
+              className="
               pointer-events-none
               absolute
               inset-[15%]
@@ -1296,18 +1297,18 @@ export default function HeroSection() {
 
               will-change-transform
             "
-          />
+            />
 
-          {/* =================================================
+            {/* =================================================
               LEFT HALF
 
               Static mask gives the OUTER EDGE
               a natural blend into the scene.
           ================================================= */}
 
-          <div
-            ref={logoLeftRef}
-            className="
+            <div
+              ref={logoLeftRef}
+              className="
               absolute
               inset-0
 
@@ -1321,26 +1322,26 @@ export default function HeroSection() {
               [mask-image:linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.45)_12%,black_28%,black_100%)]
               [-webkit-mask-image:linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.45)_12%,black_28%,black_100%)]
             "
-          >
-            <img
-              src={pacianoLogo}
-              alt="Paciano"
-              draggable={false}
-              className="
+            >
+              <img
+                src={pacianoLogo}
+                alt="Paciano"
+                draggable={false}
+                className="
                 h-full
                 w-full
                 object-contain
               "
-            />
-          </div>
+              />
+            </div>
 
-          {/* =================================================
+            {/* =================================================
               RIGHT HALF
           ================================================= */}
 
-          <div
-            ref={logoRightRef}
-            className="
+            <div
+              ref={logoRightRef}
+              className="
               absolute
               inset-0
 
@@ -1354,33 +1355,126 @@ export default function HeroSection() {
               [mask-image:linear-gradient(90deg,black_0%,black_72%,rgba(0,0,0,0.45)_88%,transparent_100%)]
               [-webkit-mask-image:linear-gradient(90deg,black_0%,black_72%,rgba(0,0,0,0.45)_88%,transparent_100%)]
             "
-          >
-            <img
-              src={pacianoLogo}
-              alt=""
-              draggable={false}
-              className="
+            >
+              <img
+                src={pacianoLogo}
+                alt=""
+                draggable={false}
+                className="
                 h-full
                 w-full
                 object-contain
               "
-            />
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* =====================================================
+        {/* =====================================================
           AUDIO
       ===================================================== */}
 
-      <audio
-        ref={audioRef}
-        src={pacianoMorningAudio}
-        autoPlay
-        loop
-        preload="auto"
-        playsInline
-      />
-    </section>
+        {/* =====================================================
+          AUDIO
+      ===================================================== */}
+
+        <audio
+          ref={audioRef}
+          src={pacianoMorningAudio}
+          autoPlay
+          loop
+          preload="auto"
+          playsInline
+        />
+
+        {/* =====================================================
+          CINEMATIC HERO → ABOUT TRANSITION
+      ===================================================== */}
+
+        <div
+          className="
+          pointer-events-none
+          absolute
+          bottom-[-1px]
+          left-0
+          z-[30]
+         h-[115px]
+          w-full
+        "
+          aria-hidden="true"
+        >
+          {/* -----------------------------------------------
+            SOFT ATMOSPHERIC FADE
+
+            This makes the photograph disappear into
+            the cream rather than ending abruptly.
+        ----------------------------------------------- */}
+
+          <div
+            className="
+            absolute
+            inset-x-[-5%]
+            bottom-0
+            h-[105px]
+
+            bg-[radial-gradient(ellipse_at_50%_100%,rgba(236,230,216,0.95)_0%,rgba(236,230,216,0.72)_38%,rgba(236,230,216,0.30)_62%,transparent_82%)]
+
+            blur-[14px]
+          "
+          />
+
+          {/* -----------------------------------------------
+            SINGLE ORGANIC CONTOUR
+
+            NOT a wave.
+            NOT repeated.
+            Just one gentle flowing edge.
+        ----------------------------------------------- */}
+
+          <svg
+            className="
+            absolute
+            bottom-0
+            left-0
+            h-[120px]
+            w-full
+          "
+            viewBox="0 0 1600 220"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="
+    M0,125
+
+    C170,113
+     285,110
+     405,118
+
+    C530,127
+     625,139
+     735,140
+
+    C845,141
+     920,122
+     1025,112
+
+    C1140,101
+     1250,107
+     1365,119
+
+    C1465,130
+     1535,121
+     1600,111
+
+    L1600,220
+    L0,220
+    Z
+  "
+              fill="#ece6d8"
+            />
+          </svg>
+        </div>
+      </section>
+    </>
   );
 }

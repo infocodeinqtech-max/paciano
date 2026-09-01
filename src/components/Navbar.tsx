@@ -36,42 +36,55 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
       {/* =====================================================
           NAVBAR
       ===================================================== */}
-       <header
+      <header
         className={`
-          fixed
-          left-0
-          right-0
-          top-0
-          z-[100]
-          transition-all
-          duration-700
-          ease-out
-          ${
-            scrolled
-              ? "bg-[#07150e]/65 backdrop-blur-xl"
-              : "bg-transparent"
-          }
-        `}
+        fixed
+        left-0
+        right-0
+        top-0
+        z-[100]
+        transition-all
+        duration-700
+        ease-out
+        ${scrolled ? "bg-[#07150e]/65 backdrop-blur-xl" : "bg-transparent"}
+      `}
       >
+        {/* SOFT CINEMATIC CONTRAST */}
         <div
           className="
-            mx-auto
-            flex
-            h-[104px]
-            w-full
-            items-center
-            px-8
-            lg:px-12
-            xl:px-16
+            pointer-events-none
+            absolute
+            inset-x-0
+            top-0
+            h-40
+            bg-gradient-to-b
+            from-[#07130c]/70
+            via-[#07130c]/30
+            to-transparent
           "
-        >
+        />
 
+        <div
+          className="
+      relative
+      z-10
+      mx-auto
+      flex
+      h-[104px]
+      w-full
+      items-center
+      px-8
+      lg:px-12
+      xl:px-16
+    "
+        >
           {/* =========================================
               PACIANO LOGO
           ========================================= */}
           <a
             href="/"
             className="
+              group
               relative
               z-[110]
               flex
@@ -83,23 +96,17 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
               src={pacianoLogo}
               alt="Paciano"
               className="
-                h-[76px]
-                w-auto
-                object-contain
-                lg:h-[82px]
-            "
-            //   className="
-            //     h-[78px]
-            //     w-auto
-            //     object-contain
-            //     transition-transform
-            //     duration-700
-            //     hover:scale-[1.02]
-            //     lg:h-[82px]
-            //   "
+              relative
+              h-[76px]
+              w-auto
+              object-contain
+              drop-shadow-[0_2px_10px_rgba(0,0,0,0.28)]
+              transition-all
+              duration-700
+              lg:h-[82px]
+              "
             />
           </a>
-
 
           {/* =========================================
               DESKTOP NAV
@@ -121,55 +128,28 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
                 xl:gap-10
               "
             >
-              <NavItem
-                label="Home"
-                href="#home"
-                active
-              />
+              <NavItem label="Home" href="#home" active />
 
-              <NavItem
-                label="Stay"
-                href="#stay"
-              />
+              <NavItem label="Stay" href="#stay" />
 
-              <NavItem
-                label="Experiences"
-                href="#experiences"
-              />
+              <NavItem label="Experiences" href="#experiences" />
 
-              <NavItem
-                label="Dining"
-                href="#dining"
-              />
+              <NavItem label="Dining" href="#dining" />
 
-              <NavItem
-                label="Gallery"
-                href="#gallery"
-              />
+              <NavItem label="Gallery" href="#gallery" />
 
-              <NavItem
-                label="Offers"
-                href="#offers"
-              />
+              <NavItem label="Offers" href="#offers" />
 
-              <NavItem
-                label="About Us"
-                href="#about"
-              />
+              <NavItem label="About Us" href="#about" />
 
-              <NavItem
-                label="Contact"
-                href="#contact"
-              />
+              <NavItem label="Contact" href="#contact" />
             </div>
           </nav>
-
 
           {/* =========================================
               RIGHT
           ========================================= */}
           <div className="ml-auto flex items-center gap-5">
-
             {/* BOOK YOUR STAY */}
             <a
               href="#booking"
@@ -196,12 +176,7 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
             >
               <span>Book Your Stay</span>
 
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
                 <rect
                   x="3"
                   y="4"
@@ -220,7 +195,6 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
                 />
               </svg>
             </a>
-
 
             {/* MENU */}
             <button
@@ -245,7 +219,6 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
               "
             >
               <span className="relative h-[16px] w-[19px]">
-
                 <span
                   className={`
                     absolute
@@ -256,11 +229,7 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
                     bg-current
                     transition-all
                     duration-500
-                    ${
-                      menuOpen
-                        ? "top-[7px] rotate-45"
-                        : ""
-                    }
+                    ${menuOpen ? "top-[7px] rotate-45" : ""}
                   `}
                 />
 
@@ -274,26 +243,17 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
                     bg-current
                     transition-all
                     duration-500
-                    ${
-                      menuOpen
-                        ? "top-[7px] -rotate-45"
-                        : ""
-                    }
+                    ${menuOpen ? "top-[7px] -rotate-45" : ""}
                   `}
                 />
-
               </span>
             </button>
-
           </div>
         </div>
       </header>
 
       {/* MOBILE MENU */}
-      <MobileMenu
-        open={menuOpen}
-        onClose={() => setMenuOpen(false)}
-      />
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );
 }
@@ -313,18 +273,22 @@ function NavItem({
       className={`
         group
         relative
+        whitespace-nowrap
         py-2
-        font-paciano-ui
-        text-[12px]
+
+        font-manrope
+        text-[11px]
         font-medium
-        tracking-[0.01em]
+        leading-none
+        tracking-[0.015em]
+
+        drop-shadow-[0_1px_5px_rgba(0,0,0,0.55)]
+
         transition-colors
         duration-500
-        ${
-          active
-            ? "text-[#9dbb47]"
-            : "text-white/90 hover:text-[#9dbb47]"
-        }
+        ease-out
+
+        ${active ? "text-[#b5ca67]" : "text-white/95 hover:text-[#b5ca67]"}
       `}
     >
       {label}
@@ -332,37 +296,20 @@ function NavItem({
       <span
         className={`
           absolute
-          -bottom-[4px]
+          -bottom-3
           left-1/2
-          h-[1px]
+          h-px
           -translate-x-1/2
-          bg-[#9dbb47]
+          bg-[#a4bd55]
+
           transition-all
           duration-500
-          ${
-            active
-              ? "w-[23px]"
-              : "w-0 group-hover:w-[23px]"
-          }
-        `}
-      />
+          ease-out
 
-      <span
-        className={`
-          absolute
-          -bottom-[5px]
-          left-1/2
-          h-[3px]
-          w-[3px]
-          -translate-x-1/2
-          rounded-full
-          bg-[#9dbb47]
-          transition-opacity
-          duration-500
           ${
             active
-              ? "opacity-100"
-              : "opacity-0 group-hover:opacity-100"
+              ? "w-[18px] opacity-100"
+              : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
           }
         `}
       />
@@ -370,13 +317,7 @@ function NavItem({
   );
 }
 
-function MobileMenu({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <div
       className={`
@@ -423,11 +364,7 @@ function MobileMenu({
           transition-transform
           duration-700
           ease-[cubic-bezier(.22,1,.36,1)]
-          ${
-            open
-              ? "translate-x-0"
-              : "translate-x-full"
-          }
+          ${open ? "translate-x-0" : "translate-x-full"}
         `}
       >
         {/* LOGO */}
@@ -445,11 +382,7 @@ function MobileMenu({
 
         {/* LINKS */}
         <nav className="flex flex-col">
-          <MobileNavItem
-            label="Home"
-            href="#home"
-            onClick={onClose}
-          />
+          <MobileNavItem label="Home" href="#home" onClick={onClose} />
 
           {NAV_LINKS.map((item) => (
             <MobileNavItem
