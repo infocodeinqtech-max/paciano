@@ -29,6 +29,227 @@ import sustainable from "@/images/sustainable-stay.jpg";
 |--------------------------------------------------------------------------
 */
 
+// const experiences = [
+//   {
+//     title: "Riverside Bliss",
+//     description: "Unwind by the serene river and feel the calm.",
+//     image: riverside,
+//   },
+//   {
+//     title: "Tea Garden Walks",
+//     description: "Stroll through lush tea gardens and breathe in freshness.",
+//     image: teaGarden,
+//   },
+//   {
+//     title: "Culinary Delights",
+//     description: "Savor flavors crafted from the finest local ingredients.",
+//     image: culinary,
+//   },
+//   {
+//     title: "Wellness & Spa",
+//     description: "Rejuvenate your mind, body and soul.",
+//     image: wellness,
+//   },
+//   {
+//     title: "Sustainable Stay",
+//     description: "Committed to nature and a better tomorrow.",
+//     image: sustainable,
+//   },
+// ];
+
+// function ExperienceIcon({ type }: { type: number }) {
+//   const common = `
+//     h-[52px]
+//     w-[52px]
+//     text-[#3F542F]
+//   `;
+
+//   // Riverside Bliss
+//   if (type === 0) {
+//     return (
+//       <svg viewBox="0 0 60 60" className={common} fill="none">
+//         <circle
+//           cx="30"
+//           cy="30"
+//           r="21"
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//         />
+
+//         <path
+//           d="M12 28C18 22 23 35 30 28C37 21 42 35 48 28"
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//           strokeLinecap="round"
+//         />
+
+//         <path
+//           d="M15 36C22 32 29 39 36 35C40 33 43 34 46 36"
+//           stroke="currentColor"
+//           strokeWidth="1.2"
+//           strokeLinecap="round"
+//         />
+//       </svg>
+//     );
+//   }
+
+//   // Tea Garden Walks
+//   if (type === 1) {
+//     return (
+//       <svg viewBox="0 0 60 60" className={common} fill="none">
+//         <path
+//           d="M30 49C30 39 30 29 36 15"
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//           strokeLinecap="round"
+//         />
+
+//         <path
+//           d="
+//             M30 35
+//             C21 33 16 27 17 19
+//             C25 20 30 26 30 34
+//           "
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//         />
+
+//         <path
+//           d="
+//             M34 28
+//             C35 20 41 15 48 17
+//             C46 24 41 29 34 29
+//           "
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//         />
+
+//         <path
+//           d="
+//             M30 42
+//             C24 40 20 37 18 33
+//           "
+//           stroke="currentColor"
+//           strokeWidth="1.2"
+//         />
+//       </svg>
+//     );
+//   }
+
+//   // Culinary Delights
+//   if (type === 2) {
+//     return (
+//       <svg viewBox="0 0 60 60" className={common} fill="none">
+//         <path
+//           d="M13 31H47"
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//           strokeLinecap="round"
+//         />
+
+//         <path
+//           d="
+//             M17 31
+//             C17 22 23 17 30 17
+//             C37 17 43 22 43 31
+//           "
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//         />
+
+//         <path
+//           d="M15 36H45"
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//           strokeLinecap="round"
+//         />
+
+//         <path
+//           d="M23 42H37"
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//           strokeLinecap="round"
+//         />
+
+//         <circle cx="30" cy="11" r="2" stroke="currentColor" strokeWidth="1.3" />
+//       </svg>
+//     );
+//   }
+
+//   // Wellness & Spa
+//   if (type === 3) {
+//     return (
+//       <svg viewBox="0 0 60 60" className={common} fill="none">
+//         <path
+//           d="
+//             M30 49
+//             C29 40 21 35 21 26
+//             C21 18 25 13 30 10
+//             C35 13 39 18 39 26
+//             C39 35 31 40 30 49Z
+//           "
+//           stroke="currentColor"
+//           strokeWidth="1.5"
+//         />
+
+//         <path
+//           d="M30 18V43"
+//           stroke="currentColor"
+//           strokeWidth="1"
+//           strokeLinecap="round"
+//         />
+
+//         <path
+//           d="M30 28C25 24 23 21 22 18"
+//           stroke="currentColor"
+//           strokeWidth="1"
+//         />
+
+//         <path
+//           d="M30 31C35 27 37 23 38 20"
+//           stroke="currentColor"
+//           strokeWidth="1"
+//         />
+//       </svg>
+//     );
+//   }
+
+//   // Sustainable Stay
+//   return (
+//     <svg viewBox="0 0 60 60" className={common} fill="none">
+//       <path
+//         d="M29 49C29 39 30 28 36 15"
+//         stroke="currentColor"
+//         strokeWidth="1.5"
+//         strokeLinecap="round"
+//       />
+
+//       <path
+//         d="
+//           M30 35
+//           C21 33 16 27 17 19
+//           C25 20 30 26 30 34
+//         "
+//         stroke="currentColor"
+//         strokeWidth="1.5"
+//       />
+
+//       <path
+//         d="
+//           M34 29
+//           C36 20 42 16 49 18
+//           C47 25 41 29 34 30
+//         "
+//         stroke="currentColor"
+//         strokeWidth="1.5"
+//       />
+
+//       <circle cx="20" cy="21" r="1.5" fill="currentColor" />
+
+//       <circle cx="15" cy="25" r="1" fill="currentColor" />
+//     </svg>
+//   );
+// }
 const experiences = [
   {
     title: "Riverside Bliss",
@@ -58,195 +279,285 @@ const experiences = [
 ];
 
 function ExperienceIcon({ type }: { type: number }) {
-  const common = `
-    h-[52px]
-    w-[52px]
-    text-[#3F542F]
-  `;
+  const common =
+    "h-[48px] w-[48px] text-[#66783D] transition-all duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)]";
 
-  // Riverside Bliss
+  /* ============================================================
+     01 — RIVERSIDE
+  ============================================================ */
   if (type === 0) {
     return (
-      <svg viewBox="0 0 60 60" className={common} fill="none">
+      <svg viewBox="0 0 64 64" className={common} fill="none">
+        {/* sun */}
         <circle
-          cx="30"
-          cy="30"
-          r="21"
+          cx="32"
+          cy="16"
+          r="4"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1.25"
         />
 
+        {/* horizon */}
         <path
-          d="M12 28C18 22 23 35 30 28C37 21 42 35 48 28"
+          d="M13 28C20 25 25 25 32 28C39 31 45 31 51 28"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1.25"
+          strokeLinecap="round"
+        />
+
+        {/* river */}
+        <path
+          d="M10 36C17 32 23 32 30 36C37 40 43 40 54 35"
+          stroke="currentColor"
+          strokeWidth="1.25"
           strokeLinecap="round"
         />
 
         <path
-          d="M15 36C22 32 29 39 36 35C40 33 43 34 46 36"
+          d="M13 44C20 41 26 41 33 44C40 47 46 47 51 44"
           stroke="currentColor"
-          strokeWidth="1.2"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+
+        {/* tiny shore */}
+        <path
+          d="M18 51C25 49 38 49 46 51"
+          stroke="currentColor"
+          strokeWidth="1"
           strokeLinecap="round"
         />
       </svg>
     );
   }
 
-  // Tea Garden Walks
+  /* ============================================================
+     02 — TEA GARDEN
+  ============================================================ */
   if (type === 1) {
     return (
-      <svg viewBox="0 0 60 60" className={common} fill="none">
+      <svg viewBox="0 0 64 64" className={common} fill="none">
+        {/* elegant central stem */}
         <path
-          d="M30 49C30 39 30 29 36 15"
+          d="M32 53C31 42 32 31 38 13"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1.25"
           strokeLinecap="round"
         />
 
+        {/* left leaf */}
         <path
           d="
-            M30 35
-            C21 33 16 27 17 19
-            C25 20 30 26 30 34
+            M32 38
+            C23 36 17 30 17 22
+            C25 23 31 29 32 37
           "
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1.25"
         />
 
+        {/* right leaf */}
         <path
           d="
-            M34 28
-            C35 20 41 15 48 17
-            C46 24 41 29 34 29
+            M35 29
+            C36 21 42 16 49 17
+            C47 24 42 29 35 30
           "
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1.25"
         />
 
+        {/* small leaf */}
         <path
           d="
-            M30 42
-            C24 40 20 37 18 33
+            M31 46
+            C25 44 21 40 20 35
+            C26 36 30 40 32 45
           "
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+
+        {/* tiny bud */}
+        <circle cx="40" cy="12" r="1.7" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  /* ============================================================
+     03 — CULINARY
+  ============================================================ */
+  if (type === 2) {
+    return (
+      <svg viewBox="0 0 64 64" className={common} fill="none">
+        {/* plate */}
+        <ellipse
+          cx="32"
+          cy="38"
+          rx="20"
+          ry="7"
           stroke="currentColor"
           strokeWidth="1.2"
         />
-      </svg>
-    );
-  }
 
-  // Culinary Delights
-  if (type === 2) {
-    return (
-      <svg viewBox="0 0 60 60" className={common} fill="none">
-        <path
-          d="M13 31H47"
+        <ellipse
+          cx="32"
+          cy="37"
+          rx="14"
+          ry="4"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="0.9"
+        />
+
+        {/* food / botanical garnish */}
+        <path
+          d="M26 35C27 29 31 26 36 24"
+          stroke="currentColor"
+          strokeWidth="1.1"
           strokeLinecap="round"
         />
 
         <path
           d="
-            M17 31
-            C17 22 23 17 30 17
-            C37 17 43 22 43 31
+            M29 30
+            C25 29 23 26 24 23
+            C28 24 30 26 30 30
           "
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1"
         />
 
         <path
-          d="M15 36H45"
+          d="
+            M34 27
+            C36 23 40 21 43 22
+            C41 26 38 28 34 28
+          "
           stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
+          strokeWidth="1"
         />
 
+        {/* plate base */}
         <path
-          d="M23 42H37"
+          d="M18 48C26 51 39 51 47 48"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1"
           strokeLinecap="round"
         />
-
-        <circle cx="30" cy="11" r="2" stroke="currentColor" strokeWidth="1.3" />
       </svg>
     );
   }
 
-  // Wellness & Spa
+  /* ============================================================
+     04 — WELLNESS
+  ============================================================ */
   if (type === 3) {
     return (
-      <svg viewBox="0 0 60 60" className={common} fill="none">
+      <svg viewBox="0 0 64 64" className={common} fill="none">
+        {/* water / breathing */}
         <path
           d="
-            M30 49
-            C29 40 21 35 21 26
-            C21 18 25 13 30 10
-            C35 13 39 18 39 26
-            C39 35 31 40 30 49Z
+            M15 25
+            C21 19 27 19 32 25
+            C37 31 43 31 49 25
           "
           stroke="currentColor"
-          strokeWidth="1.5"
-        />
-
-        <path
-          d="M30 18V43"
-          stroke="currentColor"
-          strokeWidth="1"
+          strokeWidth="1.1"
           strokeLinecap="round"
         />
 
         <path
-          d="M30 28C25 24 23 21 22 18"
+          d="
+            M15 34
+            C21 28 27 28 32 34
+            C37 40 43 40 49 34
+          "
           stroke="currentColor"
-          strokeWidth="1"
+          strokeWidth="1.1"
+          strokeLinecap="round"
+        />
+
+        {/* lotus */}
+        <path
+          d="
+            M32 48
+            C27 43 25 38 28 34
+            C31 37 32 41 32 45
+          "
+          stroke="currentColor"
+          strokeWidth="1.1"
         />
 
         <path
-          d="M30 31C35 27 37 23 38 20"
+          d="
+            M32 48
+            C37 43 39 38 36 34
+            C33 37 32 41 32 45
+          "
+          stroke="currentColor"
+          strokeWidth="1.1"
+        />
+
+        <path
+          d="M23 48H41"
           stroke="currentColor"
           strokeWidth="1"
+          strokeLinecap="round"
         />
       </svg>
     );
   }
 
-  // Sustainable Stay
+  /* ============================================================
+     05 — SUSTAINABLE STAY
+  ============================================================ */
+
   return (
-    <svg viewBox="0 0 60 60" className={common} fill="none">
+    <svg viewBox="0 0 64 64" className={common} fill="none">
+      {/* earth / home */}
       <path
-        d="M29 49C29 39 30 28 36 15"
+        d="
+          M16 34
+          C19 24 26 18 36 17
+          C44 16 50 21 52 28
+          C46 27 41 29 37 34
+          C31 41 24 43 17 41
+        "
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      />
+
+      {/* leaf */}
+      <path
+        d="M31 49C31 40 34 31 42 24"
+        stroke="currentColor"
+        strokeWidth="1.1"
         strokeLinecap="round"
       />
 
       <path
         d="
-          M30 35
-          C21 33 16 27 17 19
-          C25 20 30 26 30 34
+          M33 38
+          C27 36 24 32 24 27
+          C30 28 34 32 34 37
         "
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1"
       />
 
       <path
         d="
-          M34 29
-          C36 20 42 16 49 18
-          C47 25 41 29 34 30
+          M37 31
+          C39 26 43 23 48 24
+          C46 29 42 32 37 33
         "
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1"
       />
 
-      <circle cx="20" cy="21" r="1.5" fill="currentColor" />
-
-      <circle cx="15" cy="25" r="1" fill="currentColor" />
+      {/* tiny seed */}
+      <circle cx="22" cy="19" r="1.5" fill="currentColor" />
     </svg>
   );
 }
@@ -2423,8 +2734,8 @@ export default function AboutUs() {
               </g>
 
               {/* ==========================================================
-      FINE VEINS
-  ========================================================== */}
+                  FINE VEINS
+              ========================================================== */}
 
               <g
                 stroke="#65744D"
@@ -2446,8 +2757,8 @@ export default function AboutUs() {
               </g>
 
               {/* ==========================================================
-      TINY GOLDEN SEEDS
-  ========================================================== */}
+                  TINY GOLDEN SEEDS
+              ========================================================== */}
 
               <g fill="#B7A66C" opacity="0.46">
                 <circle cx="119" cy="282" r="1.7" />
@@ -2457,35 +2768,36 @@ export default function AboutUs() {
                 <circle cx="47" cy="48" r="1.6" />
               </g>
             </svg>
+
             {/* ==========================================================
-      SMALL FLOATING LEAF
-  ========================================================== */}
+              SMALL FLOATING LEAF
+          ========================================================== */}
 
             <div
               className="
-      pointer-events-none
-      absolute
+                pointer-events-none
+                absolute
 
-      right-[25%]
-      top-[8px]
+                right-[25%]
+                top-[8px]
 
-      z-50
+                z-50
 
-      flex
-      h-[54px]
-      w-[54px]
+                flex
+                h-[60px]
+                w-[54px]
 
-      items-center
-      justify-center
+                items-center
+                justify-center
 
-      rounded-full
+                rounded-full
 
-      bg-[#F2EADD]
+                bg-[#F2EADD]
 
-      shadow-[0_12px_30px_rgba(55,55,40,.13)]
+                shadow-[0_12px_30px_rgba(55,55,40,.13)]
 
-      paciano-leaf-orbit
-    "
+                paciano-leaf-orbit
+              "
             >
               <svg
                 viewBox="0 0 40 40"
@@ -2583,7 +2895,7 @@ export default function AboutUs() {
             className="
           font-manrope
 
-          text-[8px]
+          text-[12px]
           font-semibold
           uppercase
           tracking-[0.3em]
@@ -2618,129 +2930,355 @@ export default function AboutUs() {
         </div>
 
         {/* ==========================================================
-        FIVE EXPERIENCES
-    ========================================================== */}
+    FIVE EXPERIENCES
+========================================================== */}
 
         <div
           className="
-        mt-[35px]
+    paciano-experiences
+    relative
 
-        grid
-        grid-cols-2
+    mt-[55px]
 
-        gap-[12px]
+    grid
+    grid-cols-2
+    gap-x-[14px]
+    gap-y-[35px]
 
-        sm:grid-cols-3
+    sm:grid-cols-3
 
-        lg:grid-cols-5
-        lg:gap-[14px]
-      "
+    lg:grid-cols-5
+    lg:gap-x-[18px]
+    lg:gap-y-0
+
+    xl:px-[10px]
+  "
         >
           {experiences.map((experience, index) => (
             <article
               key={experience.title}
-              className="
-            paciano-reveal
-            group
-            relative
-            overflow-hidden
-            rounded-[18px]
-            bg-[#F0E8D8]
+              className={`
+        paciano-experience
+        paciano-experience-${index + 1}
 
-            shadow-[0_12px_35px_rgba(55,55,40,.055)]
+        group
+        relative
 
-            transition-transform
-            duration-700
-
-            hover:-translate-y-[5px]
-          "
+        ${index === 1 ? "lg:translate-y-[22px]" : ""}
+        ${index === 2 ? "lg:translate-y-[-5px]" : ""}
+        ${index === 3 ? "lg:translate-y-[28px]" : ""}
+        ${index === 4 ? "lg:translate-y-[5px]" : ""}
+      `}
               style={{
-                transitionDelay: `${index * 100}ms`,
+                transitionDelay: `${index * 140}ms`,
               }}
             >
-              {/* ICON + TEXT */}
+              {/* =====================================================
+          ICON
+      ===================================================== */}
 
               <div
                 className="
-              flex
-              min-h-[165px]
+          paciano-experience-icon
 
-              flex-col
-              items-center
-              justify-center
+          relative
+          z-10
 
-              px-[15px]
-              pt-[20px]
-              pb-[15px]
+          mx-auto
 
-              text-center
-            "
+          flex
+          h-[72px]
+          w-[72px]
+
+          items-center
+          justify-center
+
+          rounded-full
+
+          border
+          border-[#71803F]/20
+
+          bg-[#F5EEE1]/55
+
+          backdrop-blur-[2px]
+
+          transition-all
+          duration-[1200ms]
+          ease-[cubic-bezier(.22,1,.36,1)]
+        "
               >
-                <div
+                <ExperienceIcon type={index} />
+
+                {/* tiny orbit */}
+                <span
                   className="
-                mb-[8px]
+            pointer-events-none
+            absolute
+            inset-[-5px]
 
-                text-[#34472F]
-              "
-                >
-                  <ExperienceIcon type={index} />
-                </div>
+            rounded-full
 
+            border
+            border-[#71803F]/0
+
+            transition-all
+            duration-[1200ms]
+            ease-[cubic-bezier(.22,1,.36,1)]
+
+            group-hover:inset-[-9px]
+            group-hover:border-[#71803F]/20
+          "
+                />
+              </div>
+
+              {/* =====================================================
+          TEXT
+      ===================================================== */}
+
+              <div
+                className="
+          relative
+          z-10
+
+          mt-[18px]
+
+          text-center
+        "
+              >
                 <h4
                   className="
-                font-cormorant
+    paciano-experience-title
 
-                text-[19px]
-                leading-none
+    font-cormorant
 
-                text-[#17251B]
-              "
+    text-[25px]
+    leading-[1.05]
+
+    tracking-[-0.02em]
+
+    text-[#17251B]
+
+    transition-all
+    duration-[1000ms]
+    ease-[cubic-bezier(.22,1,.36,1)]
+
+    group-hover:text-[#617638]
+  "
                 >
                   {experience.title}
                 </h4>
 
                 <p
                   className="
-                mt-[9px]
+                    paciano-experience-description
 
-                max-w-[185px]
+                    mx-auto
+                    mt-[13px]
 
-                font-manrope
+                    max-w-[205px]
 
-                text-[9px]
-                leading-[1.65]
+                    font-manrope
 
-                text-[#555D54]
-              "
+                    text-[11px]
+                    leading-[1.75]
+
+                    text-[#555C52]
+
+                    transition-all
+                    duration-[1000ms]
+                    ease-[cubic-bezier(.22,1,.36,1)]
+                  "
                 >
                   {experience.description}
                 </p>
               </div>
 
-              {/* IMAGE */}
+              {/* =====================================================
+          IMAGE FRAME
+      ===================================================== */}
 
               <div
                 className="
-              h-[225px]
-              overflow-hidden
-            "
+    paciano-experience-image
+    group/image
+    relative
+    mt-[23px]
+
+    h-[270px]
+    sm:h-[275px]
+    lg:h-[285px]
+    xl:h-[295px]
+
+    overflow-hidden
+
+    rounded-[70px_70px_28px_28px]
+
+    bg-[#E7DFCF]
+
+    shadow-[0_24px_60px_rgba(45,48,35,.12)]
+
+    animate-paciano-card-float
+
+    transition-shadow
+    duration-[1200ms]
+
+    hover:shadow-[0_32px_75px_rgba(45,48,35,.17)]
+
+    will-change-transform
+
+    motion-reduce:animate-none
+  "
               >
+                {/* soft botanical border */}
+
+                <div
+                  className="
+            pointer-events-none
+            absolute
+            inset-[5px]
+            z-20
+
+            rounded-[65px_65px_24px_24px]
+
+            border
+            border-[#FFFDF5]/75
+
+            transition-all
+            duration-[1200ms]
+
+            group-hover:inset-[8px]
+            group-hover:border-[#FFFDF5]
+          "
+                />
+
+                {/* image */}
+
                 <img
                   src={experience.image}
                   alt={experience.title}
                   className="
-                h-full
-                w-full
+                      paciano-experience-img
 
-                object-cover
+                      h-full
+                      w-full
 
-                transition-transform
-                duration-[3500ms]
-                ease-[cubic-bezier(.22,1,.36,1)]
+                      object-cover
 
-                group-hover:scale-[1.06]
-              "
+                      transition-transform
+                      duration-[5000ms]
+                      ease-[cubic-bezier(.22,1,.36,1)]
+
+                      group-hover:scale-[1.075]
+                    "
                 />
+
+                {/* warm cinematic overlay */}
+
+                <div
+                  className="
+            pointer-events-none
+            absolute
+            inset-0
+            z-10
+
+            bg-gradient-to-t
+            from-[#172319]/[0.18]
+            via-transparent
+            to-[#FFF8E8]/[0.10]
+
+            opacity-[0.85]
+
+            transition-opacity
+            duration-[1200ms]
+
+            group-hover:opacity-100
+          "
+                />
+
+                {/* moving light */}
+
+                <div
+                  className="
+                    pointer-events-none
+                    absolute
+                    left-0
+                    top-0
+                    z-20
+
+                    h-full
+                    w-[35%]
+
+                    bg-gradient-to-r
+                    from-transparent
+                    via-[#FFF8E8]/[0.16]
+                    to-transparent
+
+                    opacity-0
+
+                    -translate-x-[180%]
+                    rotate-[12deg]
+
+                   animate-paciano-image-sweep
+                  "
+                />
+              </div>
+
+              {/* =====================================================
+          BOTANICAL LINE BELOW IMAGE
+      ===================================================== */}
+
+              <div
+                className="
+          paciano-experience-botanical
+
+          relative
+
+          mx-auto
+          mt-[17px]
+
+          h-[18px]
+          w-[55px]
+        "
+              >
+                <svg
+                  viewBox="0 0 55 18"
+                  className="
+            h-full
+            w-full
+
+            overflow-visible
+
+            text-[#71883F]
+          "
+                  fill="none"
+                >
+                  <path
+                    d="M27 17C27 11 29 7 35 2"
+                    stroke="currentColor"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                  />
+
+                  <path
+                    d="
+              M28 11
+              C22 10 18 7 18 3
+              C23 4 27 7 28 11
+            "
+                    fill="currentColor"
+                    opacity=".65"
+                  />
+
+                  <path
+                    d="
+              M33 7
+              C37 4 41 3 45 4
+              C42 8 38 9 33 8
+            "
+                    fill="currentColor"
+                    opacity=".42"
+                  />
+                </svg>
               </div>
             </article>
           ))}

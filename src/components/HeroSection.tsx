@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import bannerImage from "@/images/hero.png";
+import bannerImage from "@/images/hero4.png";
 import pacianoLogo from "@/images/paciano-logo.png";
 import pacianoMorningAudio from "@/assets/audio/paciano-morning-soothing.mp3";
 
