@@ -21,10 +21,6 @@ export default function HeroSection() {
 
   const logoStageRef = useRef<HTMLDivElement | null>(null);
 
-  const logoLeftRef = useRef<HTMLDivElement | null>(null);
-
-  const logoRightRef = useRef<HTMLDivElement | null>(null);
-
   const logoGlowRef = useRef<HTMLDivElement | null>(null);
 
   const soundBarsRef = useRef<HTMLSpanElement[]>([]);
@@ -34,6 +30,15 @@ export default function HeroSection() {
   const isPlayingRef = useRef(false);
 
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const introOverlayRef = useRef<HTMLDivElement | null>(null);
+  const introLeftRef = useRef<HTMLDivElement | null>(null);
+  const introRightRef = useRef<HTMLDivElement | null>(null);
+  const introBeamRef = useRef<HTMLDivElement | null>(null);
+  const introCardRef = useRef<HTMLDivElement | null>(null);
+  
+  const logoLeftRef = useRef<HTMLDivElement | null>(null);
+  const logoRightRef = useRef<HTMLDivElement | null>(null);
 
   /* =========================================================
      HELPERS
@@ -178,51 +183,48 @@ export default function HeroSection() {
   /* =========================================================
      MASTER CINEMATIC SHOT
 
-     0.0s
-       Landscape already moving
-       Logo immediately begins approaching
+     0.0 - 0.6
+       Dark cinematic landscape + subtle botanical shadows
 
-     0.0 - 2.6
-       Slow logo zoom
+     0.6 - 1.1
+       Full coloured Paciano logo appears
 
-     0.8 - 3.2
-       Background focus pull
+     0.85 - 1.5
+       Golden centre sun beam appears
 
-     3.0 - 4.8
-       Logo begins splitting
+     1.7 - 3.0
+       Actual Paciano logo splits into two halves
 
-     4.8 - 5.7
-       Logo travels toward extreme sides
+     2.1 - 3.6
+       Dark overlay doors open from the centre
 
-     5.2 - 6.4
-       Logo edges dissolve into landscape
+     2.5 - 3.7
+       Landscape sharpens
 
-     6.4 - 6.7
-       Clean landscape breathing moment
+     2.4 - 3.3
+       Logo halves fade into the revealed landscape
 
-     6.7 - 7.9
+     4.0 - 5.0
        Hero copy appears
 
-     7.9+
+     5.0+
        Normal hero
   ========================================================= */
 
   useEffect(() => {
     const image = imageRef.current;
-
     const sunrise = sunriseRef.current;
-
     const atmosphere = atmosphereRef.current;
-
     const content = heroContentRef.current;
-
     const logoStage = logoStageRef.current;
-
-    const logoLeft = logoLeftRef.current;
-
-    const logoRight = logoRightRef.current;
-
     const logoGlow = logoGlowRef.current;
+    const logoLeft = logoLeftRef.current;
+    const logoRight = logoRightRef.current;
+    const introOverlay = introOverlayRef.current;
+    const introLeft = introLeftRef.current;
+    const introRight = introRightRef.current;
+    const introBeam = introBeamRef.current;
+    const introCard = introCardRef.current;
 
     if (
       !image ||
@@ -230,496 +232,271 @@ export default function HeroSection() {
       !atmosphere ||
       !content ||
       !logoStage ||
+      !logoGlow ||
       !logoLeft ||
       !logoRight ||
-      !logoGlow
+      !introOverlay ||
+      !introLeft ||
+      !introRight ||
+      !introBeam ||
+      !introCard
     ) {
       return;
     }
 
     const startTime = performance.now();
 
+    /*
+      STORYBOARD-LOCKED TIMELINE
+
+      0.0–0.6   dark opening + A PLACE TO BELONG
+      0.6–1.2   actual coloured Paciano logo appears
+      1.2–1.8   thin top-centre light illuminates the logo
+      1.8–2.4   logo splits
+      2.4–3.0   logo halves move apart
+      3.0–3.8   two dark doors open and landscape is revealed
+      3.8–4.6   hero typography appears
+      4.6–5.2   cinematic atmosphere softly clears
+      5.2+      hero remains alive with continuous camera motion
+    */
+
     const animate = (time: number) => {
       const elapsed = time - startTime;
 
-      /* ===================================================
-        1. HERO CAMERA — CONTINUOUS CINEMATIC DRIFT
+      /* ---------------------------------------------------------
+         BANNER CAMERA
+         Continuous, very slow drift. This is independent of the
+         intro transition and therefore never "stops" after load.
+      --------------------------------------------------------- */
 
-        The photograph is ALWAYS moving.
+      const motionCycle = 26000;
+      const phase = (elapsed % motionCycle) / motionCycle;
+      const s = Math.sin(phase * Math.PI * 2);
 
-        The logo intro happens INSIDE this shot.
-
-        No stopping.
-        No reset after the intro.
-        No second animation.
-=================================================== */
-
-      // const cameraProgress = (elapsed % 60000) / 60000;
-      const cameraProgress = (elapsed % 40000) / 40000;
-
-      /*
-   Smooth cinematic breathing.
-
-   The image slowly moves closer,
-   then gently retreats.
-
-   60 seconds = extremely slow movement.
-*/
-
-      const cameraWave =
-        (Math.sin(cameraProgress * Math.PI * 2 - Math.PI / 2) + 1) / 2;
-
-      /*
-   Slight secondary movement.
-
-   This prevents the image from feeling
-   like a simple zoom.
-*/
-
-      const cameraSecondary = Math.sin(cameraProgress * Math.PI * 4) * 0.5;
-
-      /*
-   ZOOM
-
-   1.035 → 1.065
-
-   Enough to actually see the
-   cinematic movement without
-   looking like a Ken Burns effect.
-*/
-
-      const cameraScale = 1.035 + cameraWave * 0.03;
-
-      /*
-   HORIZONTAL DRIFT
-
-   Very slow movement toward the left.
-*/
-
-      const cameraX = -cameraWave * 1.15;
-
-      /*
-   EXTREMELY SUBTLE VERTICAL MOVEMENT
-*/
-
-      const cameraY = -cameraWave * 0.4;
-
-      /*
-   Apply the camera movement.
-
-   This runs EVERY animation frame.
-*/
+      const cameraScale = 1.075 + (s + 1) * 0.010;
+      const cameraX = s * 0.38;
+      const cameraY = Math.cos(phase * Math.PI * 2) * 0.22;
 
       image.style.transform = `
-  scale(${cameraScale})
-  translate3d(
-    ${cameraX + cameraSecondary * 0.08}%,
-    ${cameraY + cameraSecondary * 0.04}%,
-    0
-  )
-`;
+        translate3d(${cameraX}%, ${cameraY}%, 0)
+        scale(${cameraScale})
+      `;
 
-      /* ===================================================
-           2. LOGO CAMERA APPROACH
+      /* ---------------------------------------------------------
+         PHOTO RESOLVE
+      --------------------------------------------------------- */
 
-           Starts IMMEDIATELY.
+      const resolve = easeInOutCubic((elapsed - 2100) / 1700);
+      const blur = 1.7 * (1 - resolve);
 
-           No waiting.
+      image.style.filter = `
+        blur(${blur}px)
+        brightness(${0.78 + clamp(resolve) * 0.22})
+        saturate(${0.92 + clamp(resolve) * 0.08})
+        contrast(${1.02 + clamp(resolve) * 0.03})
+      `;
 
-           No initial delay.
-        =================================================== */
+      /* ---------------------------------------------------------
+         1. A PLACE TO BELONG
+         Present only during the dark opening.
+      --------------------------------------------------------- */
 
-      const zoomProgress = easeOutCubic(elapsed / 2600);
+      const titleIn = easeOutCubic(elapsed / 380);
+      const titleOut = easeInOutCubic((elapsed - 470) / 190);
+      const titleOpacity =
+        elapsed < 470
+          ? clamp(titleIn)
+          : 1 - clamp(titleOut);
 
-      const logoScale = 0.5 + zoomProgress * 0.5;
+      introCard.style.opacity = `${titleOpacity}`;
+      introCard.style.transform = `
+        translate3d(0, ${8 - titleOpacity * 8}px, 0)
+      `;
 
-      const logoY = 16 - zoomProgress * 16;
+      /* ---------------------------------------------------------
+         2. PACIANO LOGO APPEARS
+      --------------------------------------------------------- */
 
+      const logoIn = easeOutCubic((elapsed - 600) / 600);
+      const logoReveal = clamp(logoIn);
+
+      logoStage.style.opacity = `${logoReveal}`;
       logoStage.style.transform = `
-          translate3d(
-            0,
-            ${logoY}px,
-            0
-          )
-          scale(${logoScale})
-        `;
+        translate3d(
+          0,
+          ${12 - logoReveal * 12}px,
+          0
+        )
+        scale(${0.92 + logoReveal * 0.08})
+      `;
 
-      /* ===================================================
-           3. FOCUS PULL
+      /* ---------------------------------------------------------
+         3. SOFT GREEN HALO
+      --------------------------------------------------------- */
 
-           Logo becomes important.
+      const haloIn = easeInOutCubic((elapsed - 680) / 500);
+      const haloOut = easeInOutCubic((elapsed - 1850) / 450);
+      const halo = clamp(haloIn) * (1 - clamp(haloOut));
 
-           Landscape becomes slightly soft.
+      logoGlow.style.opacity = `${halo * 0.62}`;
+      logoGlow.style.transform = `
+        translate(-50%, -50%)
+        scale(${0.82 + halo * 0.18})
+      `;
 
-           Then landscape comes back
-           into focus as the logo leaves.
-        =================================================== */
+      /* ---------------------------------------------------------
+         4. THIN TOP-CENTRE LIGHT
+         It does NOT travel. It simply fades in vertically in place,
+         matching the supplied reference frame.
+      --------------------------------------------------------- */
 
-      let blur = 0;
+      const beamIn = easeOutCubic((elapsed - 1200) / 330);
+      const beamOut = easeInOutCubic((elapsed - 1800) / 500);
+      const beam = clamp(beamIn) * (1 - clamp(beamOut));
 
-      if (elapsed <= 900) {
-        const p = easeInOutCubic(elapsed / 900);
+      introBeam.style.opacity = `${beam * 0.92}`;
+      introBeam.style.transform = `
+        translateX(-50%)
+        scaleY(${0.92 + beam * 0.08})
+      `;
 
-        blur = 0.2 + p * 1.8;
-      } else if (elapsed <= 3100) {
-        blur = 2;
-      } else {
-        const p = easeInOutCubic((elapsed - 3100) / 2300);
+      /* ---------------------------------------------------------
+         5. LOGO SPLITS
+      --------------------------------------------------------- */
 
-        blur = 2 * (1 - p);
-      }
+      const split = clamp(easeInOutQuart((elapsed - 1800) / 600));
+      const logoDistance = split * 84;
 
-      image.style.filter = `blur(${blur}px)`;
+      const logoFade = clamp(
+        easeInOutCubic((elapsed - 2550) / 780)
+      );
 
-      /* ===================================================
-           4. ATMOSPHERE
+      const opacity = 1 - logoFade * 0.94;
+      const logoBlur = logoFade * 3;
 
-           Very subtle cinematic tonal
-           breathing.
-        =================================================== */
-
-      const atmosphereProgress = easeInOutCubic((elapsed - 1600) / 3800);
-
-      atmosphere.style.opacity = `${0.1 - atmosphereProgress * 0.055}`;
-
-      /* ===================================================
-           5. SUNRISE
-
-           The sunrise becomes clearer
-           while the logo starts opening.
-        =================================================== */
-
-      const sunriseProgress = easeInOutCubic((elapsed - 2900) / 2700);
-
-      sunrise.style.opacity = `${0.3 + sunriseProgress * 0.7}`;
-
-      sunrise.style.transform = `
-          scale(
-            ${1 + sunriseProgress * 0.045}
-          )
-        `;
-
-      /* =========================================================
-   6. CINEMATIC LOGO SPLIT + EDGE DISSOLVE
-
-   IMPORTANT:
-
-   The logo does NOT simply disappear.
-
-   It moves outward AND fades at the
-   same time.
-
-   The further it travels toward the
-   edges, the softer it becomes.
-========================================================= */
-
-      const splitProgress = easeInOutCubic((elapsed - 3000) / 3000);
-
-      const split = clamp(splitProgress);
-
-      /* =========================================================
-   OUTWARD MOVEMENT
-
-   The logo first opens.
-
-   Then both halves slowly travel
-   toward the edges.
-========================================================= */
-
-      const splitDistance = split * 115;
-
-      /* =========================================================
-   FADE START
-
-   Do NOT fade while the logo is
-   still sitting in the center.
-
-   It stays strong initially.
-
-   Fade begins after the split has
-   already started moving outward.
-========================================================= */
-
-      const fadeStart = 0.32;
-
-      const fadeProgress =
-        split <= fadeStart ? 0 : (split - fadeStart) / (1 - fadeStart);
-
-      const fade = easeInOutCubic(clamp(fadeProgress));
-
-      /* =========================================================
-   LOGO OPACITY
-
-   The logo gradually disappears
-   while travelling outward.
-
-   Never suddenly switches to 0.
-========================================================= */
-
-      const splitLogoOpacity = 1 - Math.pow(fade, 1.35);
-
-      /* =========================================================
-   BLUR
-
-   Very subtle at first.
-
-   Stronger near the edges.
-
-   This creates the "dissolving into
-   the landscape" feeling.
-========================================================= */
-
-      const splitLogoBlur = fade * 7;
-
-      /* =========================================================
-   SCALE
-
-   IMPORTANT:
-
-   This is deliberately named differently
-   from the opening zoom's `logoScale`.
-========================================================= */
-
-      const splitLogoScale = 1 - fade * 0.07;
-
-      /* =========================================================
-   VERTICAL DRIFT
-
-   Very small movement.
-========================================================= */
-
-      const splitLogoY = -fade * 3;
-
-      /* =========================================================
-   LEFT LOGO HALF
-========================================================= */
+      logoLeft.style.opacity = `${opacity}`;
+      logoRight.style.opacity = `${opacity}`;
+      logoLeft.style.filter = `blur(${logoBlur}px)`;
+      logoRight.style.filter = `blur(${logoBlur}px)`;
 
       logoLeft.style.transform = `
-  translate3d(
-    -${splitDistance}%,
-    ${splitLogoY}px,
-    0
-  )
-  scale(${splitLogoScale})
-`;
-
-      logoLeft.style.opacity = `${splitLogoOpacity}`;
-
-      logoLeft.style.filter = `blur(${splitLogoBlur}px)`;
-
-      /* =========================================================
-   RIGHT LOGO HALF
-========================================================= */
+        translate3d(-${logoDistance}px, 0, 0)
+      `;
 
       logoRight.style.transform = `
-  translate3d(
-    ${splitDistance}%,
-    ${splitLogoY}px,
-    0
-  )
-  scale(${splitLogoScale})
-`;
+        translate3d(${logoDistance}px, 0, 0)
+      `;
 
-      logoRight.style.opacity = `${splitLogoOpacity}`;
+      /* ---------------------------------------------------------
+         6. DARK DOORS
+         The two panels themselves create the opening. There is
+         intentionally no full-screen black layer underneath them.
+      --------------------------------------------------------- */
 
-      logoRight.style.filter = `blur(${splitLogoBlur}px)`;
+      const door = clamp(
+        easeInOutQuart((elapsed - 3000) / 800)
+      );
 
-      /* =========================================================
-   EDGE DISSOLVE MASK
+      const panelDistance = door * 108;
 
-   The outer edges become transparent
-   progressively.
+      introLeft.style.transform = `
+        translate3d(-${panelDistance}%, 0, 0)
+      `;
 
-   This prevents the logo from looking
-   like two PNG pieces sliding away.
-========================================================= */
+      introRight.style.transform = `
+        translate3d(${panelDistance}%, 0, 0)
+      `;
 
-      const maskAmount = fade * 34;
+      /* Botanical overlay fades with the last part of the reveal. */
+      const atmosphereFade = clamp(
+        easeInOutCubic((elapsed - 3350) / 1100)
+      );
 
-      /* LEFT */
+      introOverlay.style.opacity = `${1 - atmosphereFade}`;
 
-      logoLeft.style.maskImage = `
-  linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0,0,0,0.10) ${maskAmount}%,
-    rgba(0,0,0,0.45) ${maskAmount + 10}%,
-    black ${maskAmount + 24}%,
-    black 100%
-  )
-`;
+      /* ---------------------------------------------------------
+         7. HERO CONTENT
+      --------------------------------------------------------- */
 
-      logoLeft.style.webkitMaskImage = `
-  linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0,0,0,0.10) ${maskAmount}%,
-    rgba(0,0,0,0.45) ${maskAmount + 10}%,
-    black ${maskAmount + 24}%,
-    black 100%
-  )
-`;
+      const copy = clamp(
+        easeOutCubic((elapsed - 3800) / 800)
+      );
 
-      /* RIGHT */
-
-      logoRight.style.maskImage = `
-  linear-gradient(
-    90deg,
-    black 0%,
-    black ${100 - maskAmount - 24}%,
-    rgba(0,0,0,0.45) ${100 - maskAmount - 10}%,
-    rgba(0,0,0,0.10) ${100 - maskAmount}%,
-    transparent 100%
-  )
-`;
-
-      logoRight.style.webkitMaskImage = `
-  linear-gradient(
-    90deg,
-    black 0%,
-    black ${100 - maskAmount - 24}%,
-    rgba(0,0,0,0.45) ${100 - maskAmount - 10}%,
-    rgba(0,0,0,0.10) ${100 - maskAmount}%,
-    transparent 100%
-  )
-`;
-
-      /* =========================================================
-   ATMOSPHERIC BLEND
-
-   Very subtle — not a glowing effect.
-
-   It simply helps the logo merge with
-   the sunrise atmosphere.
-========================================================= */
-
-      logoGlow.style.opacity = `${fade * 0.1}`;
-
-      logoGlow.style.transform = `
-  scale(${1 + fade * 0.3})
-`;
-
-      /* =========================================================
-   7. LANDSCAPE FOCUS PULL
-
-   The landscape starts slightly soft
-   during the logo introduction.
-
-   As the logo moves away, the landscape
-   becomes sharp.
-
-   IMPORTANT:
-
-   This is the ONLY place where we
-   assign image.style.filter.
-========================================================= */
-
-      const landscapeFocus = easeInOutCubic((elapsed - 3100) / 3000);
-
-      const landscapeBlur = 1.8 * (1 - landscapeFocus);
-
-      image.style.filter = `blur(${landscapeBlur}px)`;
-      /* ===================================================
-   9. HERO COPY
-=================================================== */
-
-      const copyProgress = easeOutCubic((elapsed - 6800) / 1200);
-
-      const copyY = 20 - copyProgress * 20;
-
-      const copyX = -18 + copyProgress * 18;
-
-      content.style.opacity = `${copyProgress}`;
-
+      content.style.opacity = `${copy}`;
       content.style.transform = `
-  translate3d(
-    ${copyX}px,
-    ${copyY}px,
-    0
-  )
-`;
+        translate3d(
+          ${-16 + copy * 16}px,
+          ${16 - copy * 16}px,
+          0
+        )
+      `;
 
-      /* ===================================================
-           10. FINAL STATE
+      /* ---------------------------------------------------------
+         8. LANDSCAPE WARMTH
+      --------------------------------------------------------- */
 
-           No second animation.
+      const warmth = clamp(
+        easeInOutCubic((elapsed - 3000) / 1800)
+      );
 
-           No snap.
+      sunrise.style.opacity = `${0.70 + warmth * 0.30}`;
+      atmosphere.style.opacity = `${1 - warmth * 0.34}`;
 
-           No reset.
+      /* ---------------------------------------------------------
+         9. FINAL STATE
+         Never overwrite the banner transform: camera motion must
+         continue forever.
+      --------------------------------------------------------- */
 
-           The camera simply continues.
-        =================================================== */
-
-      if (elapsed >= 8000) {
+      if (elapsed >= 5200) {
         content.style.opacity = "1";
-
         content.style.transform = "translate3d(0,0,0)";
 
-        /*
-     Logo is now completely blended
-     into the landscape.
-  */
+        introOverlay.style.opacity = "0";
+        introCard.style.opacity = "0";
 
+        logoStage.style.opacity = "0";
         logoLeft.style.opacity = "0";
         logoRight.style.opacity = "0";
-
-        logoLeft.style.transform = "translate3d(-115%, -3px, 0) scale(0.93)";
-
-        logoRight.style.transform = "translate3d(115%, -3px, 0) scale(0.93)";
-
-        logoLeft.style.filter = "blur(7px)";
-
-        logoRight.style.filter = "blur(7px)";
-
         logoGlow.style.opacity = "0";
+        introBeam.style.opacity = "0";
 
-        /*
-     Clear temporary masks.
-  */
-
-        logoLeft.style.maskImage = "none";
-        logoRight.style.maskImage = "none";
-
-        logoLeft.style.webkitMaskImage = "none";
-        logoRight.style.webkitMaskImage = "none";
-
-        /*
-     Landscape is completely sharp.
-  */
-
-        image.style.filter = "blur(0px)";
+        image.style.filter = `
+          blur(0px)
+          brightness(1)
+          saturate(1)
+          contrast(1.04)
+        `;
 
         sunrise.style.opacity = "1";
+        atmosphere.style.opacity = "0.64";
       }
-      /* ===================================================
-           11. SOUND WAVE
-
-           Organic movement.
-        =================================================== */
 
       soundBarsRef.current.forEach((bar, index) => {
         if (!bar) return;
 
         if (isPlayingRef.current) {
-          const primary = (Math.sin(time * 0.005 + index * 0.74) + 1) / 2;
+          const primary =
+            (Math.sin(time * 0.005 + index * 0.74) + 1) / 2;
 
-          const secondary = (Math.sin(time * 0.003 + index * 1.13) + 1) / 2;
+          const secondary =
+            (Math.sin(time * 0.003 + index * 1.13) + 1) / 2;
 
-          const scale = 0.58 + primary * 0.3 + secondary * 0.12;
+          const scale =
+            0.58 + primary * 0.30 + secondary * 0.12;
 
-          bar.style.transform = `
-                scaleY(${scale})
-              `;
+          bar.style.transform = `scaleY(${scale})`;
         } else {
           bar.style.transform = "scaleY(0.58)";
         }
       });
 
-      animationFrameRef.current = requestAnimationFrame(animate);
+      animationFrameRef.current =
+        requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    animationFrameRef.current =
+      requestAnimationFrame(animate);
 
     return () => {
       if (animationFrameRef.current) {
@@ -741,6 +518,7 @@ export default function HeroSection() {
       bg-[#07100a]
     "
       >
+     
         {/* =====================================================
           LANDSCAPE
       ===================================================== */}
@@ -855,23 +633,316 @@ export default function HeroSection() {
           "
           />
 
-          {/* =================================================
+                    {/* =================================================
+            PREMIUM LENS VIGNETTE
+            Very subtle edge falloff — no heavy black frame.
+          ================================================= */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute inset-0
+              z-[5]
+              bg-[radial-gradient(ellipse_82%_74%_at_48%_44%,transparent_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0.30)_100%)]
+            "
+          />
+
+{/* =================================================
             BOTTOM CINEMATIC DEPTH
         ================================================= */}
 
           <div
             className="
+              pointer-events-none
+              absolute
+              inset-x-0
+              bottom-0
+              z-[4]
+              h-[24%]
+              bg-gradient-to-t
+              from-black/25
+              to-transparent
+            "
+          />
+
+        </div>
+
+        {/* =====================================================
+          PACIANO CINEMATIC INTRO OVERLAY
+
+          This sits ABOVE the landscape and BELOW the logo.
+          The dark doors open from the centre while the real
+          coloured Paciano logo splits above them.
+        ===================================================== */}
+
+        <div
+          ref={introOverlayRef}
+          className="
             pointer-events-none
             absolute
-            inset-x-0
-            bottom-0
-            z-[4]
-            h-[24%]
-
-            bg-gradient-to-t
-            from-black/25
-            to-transparent
+            inset-0
+            z-[70]
+            overflow-hidden
           "
+        >
+          {/* -----------------------------------------------------
+             DARK BOTANICAL OPENING
+
+             No full-screen black background is placed underneath the
+             doors. The doors themselves cover the landscape at the
+             beginning and reveal it naturally from the centre.
+          ----------------------------------------------------- */}
+
+          {/* Left botanical silhouette */}
+          <svg
+            className="
+              absolute
+              -left-[9vw]
+              -top-[14vh]
+              z-[5]
+              h-[76vh]
+              w-[40vw]
+              min-w-[320px]
+              max-w-[570px]
+              opacity-[0.34]
+            "
+            viewBox="0 0 520 820"
+            fill="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="pacianoLeafLFinal" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#5d6b4f" stopOpacity="0.78" />
+                <stop offset="0.48" stopColor="#2d4028" stopOpacity="0.62" />
+                <stop offset="1" stopColor="#111b13" stopOpacity="0.12" />
+              </linearGradient>
+            </defs>
+
+            <path
+              d="M150 860C171 670 186 432 319 116"
+              stroke="#7a876d"
+              strokeOpacity="0.22"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+
+            <path
+              d="M196 548C94 516 36 429 26 302C129 331 203 414 196 548Z"
+              fill="url(#pacianoLeafLFinal)"
+            />
+
+            <path
+              d="M245 450C342 398 405 306 432 191C327 219 262 307 245 450Z"
+              fill="url(#pacianoLeafLFinal)"
+            />
+
+            <path
+              d="M158 702C74 667 21 595 12 489C101 510 166 589 158 702Z"
+              fill="url(#pacianoLeafLFinal)"
+            />
+
+            <path
+              d="M277 316C337 284 379 229 398 160C333 170 288 218 277 316Z"
+              fill="url(#pacianoLeafLFinal)"
+            />
+          </svg>
+
+          {/* Top-right botanical silhouette */}
+          <svg
+            className="
+              absolute
+              -right-[9vw]
+              -top-[18vh]
+              z-[5]
+              h-[61vh]
+              w-[39vw]
+              min-w-[320px]
+              max-w-[580px]
+              rotate-[4deg]
+              opacity-[0.36]
+            "
+            viewBox="0 0 560 690"
+            fill="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="pacianoLeafRFinal" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#617253" stopOpacity="0.82" />
+                <stop offset="0.48" stopColor="#31462b" stopOpacity="0.64" />
+                <stop offset="1" stopColor="#132017" stopOpacity="0.12" />
+              </linearGradient>
+            </defs>
+
+            <path
+              d="M652 -20C519 44 417 152 318 314"
+              stroke="#7b896f"
+              strokeOpacity="0.20"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+
+            <path
+              d="M518 123C394 134 316 202 252 304C363 299 450 243 518 123Z"
+              fill="url(#pacianoLeafRFinal)"
+            />
+
+            <path
+              d="M431 195C354 125 275 105 171 117C237 210 322 251 431 195Z"
+              fill="url(#pacianoLeafRFinal)"
+            />
+
+            <path
+              d="M351 295C291 250 228 238 142 257C196 326 266 350 351 295Z"
+              fill="url(#pacianoLeafRFinal)"
+            />
+          </svg>
+
+          {/* Hairline at the right edge */}
+          <div
+            className="
+              absolute
+              right-[3.1%]
+              top-0
+              z-[8]
+              h-full
+              w-px
+              bg-white/25
+            "
+            aria-hidden="true"
+          />
+
+          {/* -----------------------------------------------------
+             TWO DARK DOORS
+
+             At t=0 they meet at the centre and fill the whole frame.
+             As they move apart, the actual landscape underneath is
+             revealed through the middle.
+          ----------------------------------------------------- */}
+
+          <div
+            ref={introLeftRef}
+            className="
+              absolute
+              inset-y-0
+              left-0
+              z-[7]
+              w-1/2
+              bg-[linear-gradient(90deg,#020604_0%,#020604_82%,rgba(2,6,4,0.96)_91%,rgba(2,6,4,0.28)_99%,transparent_100%)]
+              will-change-transform
+            "
+          />
+
+          <div
+            ref={introRightRef}
+            className="
+              absolute
+              inset-y-0
+              right-0
+              z-[7]
+              w-1/2
+              bg-[linear-gradient(270deg,#020604_0%,#020604_82%,rgba(2,6,4,0.96)_91%,rgba(2,6,4,0.28)_99%,transparent_100%)]
+              will-change-transform
+            "
+          />
+
+          {/* Subtle centre haze: atmosphere, not a flat glow */}
+          <div
+            className="
+              absolute
+              left-1/2
+              top-1/2
+              z-[4]
+              h-[58%]
+              w-[34%]
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              bg-[radial-gradient(ellipse_at_center,rgba(61,89,51,0.15)_0%,rgba(25,42,28,0.07)_34%,transparent_74%)]
+              blur-[24px]
+            "
+            aria-hidden="true"
+          />
+
+          {/* -----------------------------------------------------
+             A PLACE TO BELONG
+          ----------------------------------------------------- */}
+
+          <div
+            ref={introCardRef}
+            className="
+              absolute
+              left-1/2
+              top-[40%]
+              z-[12]
+              -translate-x-1/2
+              -translate-y-1/2
+              text-center
+              will-change-transform
+            "
+          >
+            <p
+              className="
+                whitespace-nowrap
+                font-cormorant
+                text-[13px]
+                font-medium
+                uppercase
+                tracking-[0.54em]
+                text-white/82
+                sm:text-[15px]
+              "
+            >
+              A PLACE TO BELONG
+            </p>
+
+            <span
+              className="
+                mx-auto
+                mt-4
+                block
+                h-px
+                w-[70px]
+                bg-white/55
+              "
+            />
+          </div>
+
+          {/* -----------------------------------------------------
+             THIN WARM VERTICAL LIGHT
+             Static in position; only its intensity breathes.
+          ----------------------------------------------------- */}
+
+          <div
+            ref={introBeamRef}
+            className="
+              absolute
+              left-1/2
+              top-0
+              z-[11]
+              h-[55%]
+              w-[2px]
+              -translate-x-1/2
+              origin-top
+              bg-[linear-gradient(180deg,rgba(255,232,170,0.02)_0%,rgba(255,228,155,0.28)_16%,rgba(255,218,135,0.82)_58%,rgba(255,203,112,0.14)_100%)]
+              opacity-0
+              will-change-transform
+            "
+            aria-hidden="true"
+          />
+
+          <div
+            className="
+              absolute
+              left-1/2
+              top-[18%]
+              z-[10]
+              h-[38%]
+              w-[90px]
+              -translate-x-1/2
+              bg-[radial-gradient(ellipse_at_center,rgba(255,220,151,0.11)_0%,rgba(255,220,151,0.04)_34%,transparent_72%)]
+              blur-[18px]
+            "
+            aria-hidden="true"
           />
         </div>
 
@@ -1232,147 +1303,137 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* =====================================================
-          CINEMATIC LOGO
-      ===================================================== */}
+       
+{/* =====================================================
+  CINEMATIC PACIANO LOGO
+===================================================== */}
 
-        <div
-          className="
-          pointer-events-none
-          absolute
-          inset-0
-          z-[80]
+<div
+className="
+  pointer-events-none
+  absolute
+  inset-0
+  z-[80]
+  flex
+  items-center
+  justify-center
+  overflow-hidden
+"
+>
+<div
+  ref={logoStageRef}
+  className="
+    relative
+    flex
+    h-[280px]
+    w-[420px]
+    items-center
+    justify-center
+    will-change-transform
+  "
+>
 
-          flex
-          items-center
-          justify-center
+  {/* =================================================
+      SOFT GREEN ATMOSPHERE
+  ================================================= */}
 
-          overflow-hidden
-        "
-        >
-          <div
-            ref={logoStageRef}
-            className="
-            relative
+  <div
+    ref={logoGlowRef}
+    className="
+      pointer-events-none
+      absolute
+      left-1/2
+      top-1/2
+      h-[260px]
+      w-[260px]
+      -translate-x-1/2
+      -translate-y-1/2
+      rounded-full
+      bg-[radial-gradient(
+        circle,
+        rgba(118,190,83,0.28),
+        rgba(60,110,55,0.10)_38%,
+        transparent_72%
+      )]
+      opacity-0
+      blur-3xl
+    "
+  />
 
-            h-[250px]
-            w-[500px]
+  {/* =================================================
+      LEFT HALF OF ACTUAL LOGO
+  ================================================= */}
 
-            sm:h-[290px]
-            sm:w-[580px]
+  <div
+    ref={logoLeftRef}
+    className="
+      absolute
+      inset-0
+      flex
+      items-center
+      justify-center
+      overflow-hidden
+      will-change-transform
+    "
+    style={{
+      clipPath: "inset(0 50% 0 0)",
+    }}
+  >
+    <img
+      src={pacianoLogo}
+      alt="Paciano"
+      draggable={false}
+      className="
+        absolute
+        left-1/2
+        top-1/2
+        w-[225px]
+        max-w-none
+        -translate-x-1/2
+        -translate-y-1/2
+        object-contain
+      "
+    />
+  </div>
 
-            md:h-[320px]
-            md:w-[640px]
+  {/* =================================================
+      RIGHT HALF OF ACTUAL LOGO
+  ================================================= */}
 
-            lg:h-[350px]
-            lg:w-[700px]
+  <div
+    ref={logoRightRef}
+    className="
+      absolute
+      inset-0
+      flex
+      items-center
+      justify-center
+      overflow-hidden
+      will-change-transform
+    "
+    style={{
+      clipPath: "inset(0 0 0 50%)",
+    }}
+  >
+    <img
+      src={pacianoLogo}
+      alt="Paciano"
+      draggable={false}
+      className="
+        absolute
+        left-1/2
+        top-1/2
+        w-[225px]
+        max-w-none
+        -translate-x-1/2
+        -translate-y-1/2
+        object-contain
+      "
+    />
+  </div>
 
-            xl:h-[380px]
-            xl:w-[760px]
-
-            max-sm:h-[210px]
-            max-sm:w-[420px]
-
-            will-change-transform
-          "
-          >
-            {/* =================================================
-              LOGO ATMOSPHERIC LIGHT
-          ================================================= */}
-
-            <div
-              ref={logoGlowRef}
-              className="
-              pointer-events-none
-              absolute
-              inset-[15%]
-
-              rounded-full
-
-              bg-[radial-gradient(circle,rgba(255,218,150,0.24),transparent_68%)]
-
-              opacity-0
-
-              blur-2xl
-
-              will-change-transform
-            "
-            />
-
-            {/* =================================================
-              LEFT HALF
-
-              Static mask gives the OUTER EDGE
-              a natural blend into the scene.
-          ================================================= */}
-
-            <div
-              ref={logoLeftRef}
-              className="
-              absolute
-              inset-0
-
-              h-full
-              w-full
-
-              will-change-transform
-
-              [clip-path:inset(0_50%_0_0)]
-
-              [mask-image:linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.45)_12%,black_28%,black_100%)]
-              [-webkit-mask-image:linear-gradient(90deg,transparent_0%,rgba(0,0,0,0.45)_12%,black_28%,black_100%)]
-            "
-            >
-              <img
-                src={pacianoLogo}
-                alt="Paciano"
-                draggable={false}
-                className="
-                h-full
-                w-full
-                object-contain
-              "
-              />
-            </div>
-
-            {/* =================================================
-              RIGHT HALF
-          ================================================= */}
-
-            <div
-              ref={logoRightRef}
-              className="
-              absolute
-              inset-0
-
-              h-full
-              w-full
-
-              will-change-transform
-
-              [clip-path:inset(0_0_0_50%)]
-
-              [mask-image:linear-gradient(90deg,black_0%,black_72%,rgba(0,0,0,0.45)_88%,transparent_100%)]
-              [-webkit-mask-image:linear-gradient(90deg,black_0%,black_72%,rgba(0,0,0,0.45)_88%,transparent_100%)]
-            "
-            >
-              <img
-                src={pacianoLogo}
-                alt=""
-                draggable={false}
-                className="
-                h-full
-                w-full
-                object-contain
-              "
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* =====================================================
-          AUDIO
-      ===================================================== */}
+</div>
+</div>
 
         {/* =====================================================
           AUDIO
