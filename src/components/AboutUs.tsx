@@ -280,7 +280,7 @@ const experiences = [
 
 function ExperienceIcon({ type }: { type: number }) {
   const common =
-    "h-[48px] w-[48px] text-[#66783D] transition-all duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)]";
+    "h-[54px] w-[54px] text-[#5F7138] transition-all duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)]";
 
   /* ============================================================
      01 — RIVERSIDE
@@ -1194,8 +1194,10 @@ function OrganicImage({
 
 export default function AboutUs() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const experienceRef = useRef<HTMLDivElement | null>(null);
 
   const [visible, setVisible] = useState(false);
+  const [experienceVisible, setExperienceVisible] = useState(false);
 
   useEffect(() => {
     const element = sectionRef.current;
@@ -1204,14 +1206,11 @@ export default function AboutUs() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-
-          observer.disconnect();
-        }
+        setVisible(entry.isIntersecting);
       },
       {
-        threshold: 0.08,
+        threshold: 0.12,
+        rootMargin: "0px 0px -5% 0px",
       },
     );
 
@@ -1219,6 +1218,49 @@ export default function AboutUs() {
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const element = experienceRef.current;
+
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setExperienceVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -12% 0px",
+      },
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // useEffect(() => {
+  //   const element = sectionRef.current;
+
+  //   if (!element) return;
+
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting) {
+  //         setVisible(true);
+
+  //         observer.disconnect();
+  //       }
+  //     },
+  //     {
+  //       threshold: 0.08,
+  //     },
+  //   );
+
+  //   observer.observe(element);
+
+  //   return () => observer.disconnect();
+  // }, []);
 
   return (
     <section
@@ -2934,6 +2976,7 @@ export default function AboutUs() {
 ========================================================== */}
 
         <div
+          ref={experienceRef}
           className="
     paciano-experiences
     relative
@@ -2958,22 +3001,31 @@ export default function AboutUs() {
             <article
               key={experience.title}
               className={`
-        paciano-experience
-        paciano-experience-${index + 1}
+  paciano-experience
+  paciano-experience-${index + 1}
 
-        group
-        relative
+  group
+  relative
 
-        ${index === 1 ? "lg:translate-y-[22px]" : ""}
-        ${index === 2 ? "lg:translate-y-[-5px]" : ""}
-        ${index === 3 ? "lg:translate-y-[28px]" : ""}
-        ${index === 4 ? "lg:translate-y-[5px]" : ""}
-      `}
-              style={{
-                transitionDelay: `${index * 140}ms`,
-              }}
+  ${experienceVisible ? "paciano-experience-visible" : ""}
+`}
+              style={
+                {
+                  "--experience-delay": `${index * 450}ms`,
+                  "--experience-y":
+                    index === 1 || index === 3
+                      ? "22px"
+                      : index === 2
+                        ? "35px"
+                        : "0px",
+                } as React.CSSProperties
+              }
             >
               {/* =====================================================
+              ${index === 1 ? "lg:translate-y-[22px]" : ""}
+${index === 2 ? "lg:translate-y-[26px]" : ""}
+${index === 3 ? "lg:translate-y-[22px]" : ""}
+${index === 4 ? "lg:translate-y-0" : ""}
           ICON
       ===================================================== */}
 
@@ -3010,24 +3062,33 @@ export default function AboutUs() {
                 <ExperienceIcon type={index} />
 
                 {/* tiny orbit */}
+                {/* <span
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-[-5px]
+
+                    rounded-full
+
+                    border
+                    border-[#71803F]/0
+
+                    transition-all
+                    duration-[1200ms]
+                    ease-[cubic-bezier(.22,1,.36,1)]
+
+                    group-hover:inset-[-9px]
+                    group-hover:border-[#71803F]/20
+                  "
+                /> */}
                 <span
                   className="
-            pointer-events-none
-            absolute
-            inset-[-5px]
-
-            rounded-full
-
-            border
-            border-[#71803F]/0
-
-            transition-all
-            duration-[1200ms]
-            ease-[cubic-bezier(.22,1,.36,1)]
-
-            group-hover:inset-[-9px]
-            group-hover:border-[#71803F]/20
-          "
+                    paciano-icon-orbit
+                    pointer-events-none
+                    absolute
+                    inset-[-6px]
+                    rounded-full
+                  "
                 />
               </div>
 
@@ -3048,20 +3109,15 @@ export default function AboutUs() {
                 <h4
                   className="
     paciano-experience-title
-
     font-cormorant
-
-    text-[25px]
+    text-[28px]
+    font-medium
     leading-[1.05]
-
-    tracking-[-0.02em]
-
+    tracking-[-0.015em]
     text-[#17251B]
-
     transition-all
     duration-[1000ms]
     ease-[cubic-bezier(.22,1,.36,1)]
-
     group-hover:text-[#617638]
   "
                 >
@@ -3071,22 +3127,18 @@ export default function AboutUs() {
                 <p
                   className="
                     paciano-experience-description
-
-                    mx-auto
-                    mt-[13px]
-
-                    max-w-[205px]
-
-                    font-manrope
-
-                    text-[11px]
-                    leading-[1.75]
-
-                    text-[#555C52]
-
-                    transition-all
-                    duration-[1000ms]
-                    ease-[cubic-bezier(.22,1,.36,1)]
+    mx-auto
+    mt-[14px]
+    max-w-[220px]
+    font-manrope
+    text-[13px]
+    font-normal
+    leading-[1.65]
+    tracking-[0.005em]
+    text-[#555C52]
+    transition-all
+    duration-[1000ms]
+    ease-[cubic-bezier(.22,1,.36,1)]
                   "
                 >
                   {experience.description}
@@ -3224,21 +3276,21 @@ export default function AboutUs() {
               </div>
 
               {/* =====================================================
-          BOTANICAL LINE BELOW IMAGE
-      ===================================================== */}
+                    BOTANICAL LINE BELOW IMAGE
+                ===================================================== */}
 
               <div
                 className="
-          paciano-experience-botanical
+                  paciano-experience-botanical
 
-          relative
+                  relative
 
-          mx-auto
-          mt-[17px]
+                  mx-auto
+                  mt-[17px]
 
-          h-[18px]
-          w-[55px]
-        "
+                  h-[18px]
+                  w-[55px]
+                "
               >
                 <svg
                   viewBox="0 0 55 18"
@@ -3289,42 +3341,43 @@ export default function AboutUs() {
       ANIMATION
   ============================================================ */}
 
-      <style>{`
+      <style>
+        {`
+       /* ==========================================================
+          ABOUT PACIANO SECTION
+        ========================================================== */
+          .paciano-reveal {
+            opacity: 0;
+            translate: 0 65px;
 
-    .paciano-reveal {
-      opacity: 0;
-      transform: translateY(28px);
+            transition:
+              opacity 2.8s cubic-bezier(.16, 1, .3, 1),
+              translate 2.8s cubic-bezier(.16, 1, .3, 1);
+          }
 
-      transition:
-        opacity 1.3s cubic-bezier(.22,1,.36,1),
-        transform 1.3s cubic-bezier(.22,1,.36,1);
-    }
+          .paciano-about-visible .paciano-reveal {
+            opacity: 1;
+            translate: 0 0;
+          }
 
-    .paciano-about-visible .paciano-reveal {
-      opacity: 1;
-      transform: translateY(0);
-    }
+          .paciano-delay-1 {
+            transition-delay: 0.2s;
+          }
 
-    .paciano-delay-1 {
-      transition-delay: .12s;
-    }
+          .paciano-delay-2 {
+            transition-delay: 0.45s;
+          }
 
-    .paciano-delay-2 {
-      transition-delay: .25s;
-    }
+          .paciano-delay-3 {
+            transition-delay: 0.7s;
+          }
 
-    .paciano-delay-3 {
-      transition-delay: .4s;
-    }
-
-    .paciano-delay-4 {
-      transition-delay: .55s;
-    }
-    
-
-    /* ==========================================================
-   CINEMATIC PHOTO MOTION
-========================================================== */
+          .paciano-delay-4 {
+            transition-delay: 0.95s;
+          }
+      /* ==========================================================
+        CINEMATIC PHOTO MOTION
+      ========================================================== */
 
 .paciano-photo {
   will-change: transform;
@@ -3572,8 +3625,474 @@ export default function AboutUs() {
       }
 
     }
+  /* ==========================================================
+   PACIANO — CINEMATIC FIVE EXPERIENCE CARDS
+   ========================================================== */
 
-  `}</style>
+    .paciano-experience {
+    transform: translateY(var(--experience-y, 0px));
+      opacity: 0;
+    }
+
+    /* Start the cards only when they actually enter the viewport */
+   .paciano-experience-visible {
+  animation:
+    pacianoExperienceReveal
+    3.2s
+    cubic-bezier(.22, 1, .36, 1)
+    both;
+
+  animation-delay: var(--experience-delay);
+}
+
+
+/* ----------------------------------------------------------
+   CINEMATIC ENTRY
+   IMPORTANT:
+   No transform on the card itself.
+   This keeps typography perfectly sharp.
+   ---------------------------------------------------------- */
+
+@keyframes pacianoExperienceReveal {
+  0% {
+    opacity: 0;
+    transform:
+      translateY(
+        calc(var(--experience-y, 0px) + 18px)
+      );
+  }
+
+  100% {
+    opacity: 1;
+    transform:
+      translateY(var(--experience-y, 0px));
+  }
+}
+
+/* ==========================================================
+   ICON — SUBTLE ENTRY
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-icon {
+  animation:
+    pacianoIconReveal
+    1.2s
+    cubic-bezier(.22, 1, .36, 1)
+    both;
+
+  animation-delay:
+    calc(var(--experience-delay) + 250ms);
+}
+
+@keyframes pacianoIconReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* ==========================================================
+   TITLE
+   CRISP — NO TRANSLATE / NO BLUR
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-title {
+  animation: pacianoTitleFade 900ms cubic-bezier(.22,1,.36,1) both;
+  animation-delay: calc(var(--experience-delay) + 420ms);
+}
+
+@keyframes pacianoTitleFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pacianoDescriptionFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pacianoTitleReveal {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+
+/* ==========================================================
+   DESCRIPTION
+   CRISP — NO TRANSLATE / NO BLUR
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-description {
+  animation: pacianoDescriptionFade 900ms cubic-bezier(.22,1,.36,1) both;
+  animation-delay: calc(var(--experience-delay) + 600ms);
+}
+
+
+@keyframes pacianoDescriptionReveal {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+
+/* ==========================================================
+   IMAGE — THIS IS WHERE THE CINEMATIC MOTION SHOULD LIVE
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-img {
+  animation:
+    pacianoImagePush
+    10s
+    cubic-bezier(.22, 1, .36, 1)
+    both;
+
+  animation-delay:
+    calc(var(--experience-delay) + 350ms);
+
+  will-change: transform;
+}
+
+@keyframes pacianoImagePush {
+  0% {
+    transform: scale(1.075);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/* ==========================================================
+   LIGHT SWEEP
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-image > div:last-child {
+  animation:
+    pacianoLightSweep
+    3.2s
+    cubic-bezier(.22, 1, .36, 1)
+    both;
+
+  animation-delay:
+    calc(var(--experience-delay) + 900ms);
+}
+
+
+/* ==========================================================
+   HOVER
+   ========================================================== */
+
+.paciano-experience:hover .paciano-experience-title {
+  transform: translateY(-2px);
+}
+
+.paciano-experience:hover .paciano-experience-description {
+  transform: translateY(-1px);
+}
+
+.paciano-experience:hover .paciano-experience-icon {
+  transform: translateY(-3px);
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .paciano-experience,
+  .paciano-experience-icon,
+  .paciano-experience-title,
+  .paciano-experience-description,
+  .paciano-experience-img,
+  .paciano-experience-image > div:last-child {
+    animation: none !important;
+    transition: none !important;
+  }
+
+ 
+}
+
+
+
+
+/* ==========================================================
+   ICON — VERY SUBTLE LIFE
+   ========================================================== */
+
+@keyframes pacianoIconReveal {
+
+  0% {
+    opacity: 0;
+    transform:
+      translateY(12px)
+      scale(.92)
+      rotate(-3deg);
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1)
+      rotate(0deg);
+  }
+}
+
+
+/* ==========================================================
+   DESCRIPTION — FOLLOWS TITLE
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-description{
+  animation:
+    pacianoTextReveal
+    1.2s
+    cubic-bezier(.22,1,.36,1)
+    both;
+
+  animation-delay:
+    calc(var(--experience-delay) + 650ms);
+}
+
+
+@keyframes pacianoTextReveal {
+
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ==========================================================
+   IMAGE — CINEMATIC SLOW PUSH
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-img{
+  animation:
+    pacianoImagePush
+    10s
+    cubic-bezier(.22,1,.36,1)
+    both;
+
+  animation-delay:
+    calc(var(--experience-delay) + 500ms);
+
+  will-change: transform;
+}
+
+
+@keyframes pacianoImagePush {
+
+  0% {
+    transform: scale(1.075);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/* ==========================================================
+   MOVING LIGHT — ONE SLOW CINEMATIC SWEEP
+   ========================================================== */
+
+.paciano-experience-visible .paciano-experience-image > div:last-child {
+  animation:
+    pacianoLightSweep
+    3.2s
+    cubic-bezier(.22,1,.36,1)
+    both;
+
+  animation-delay:
+    calc(var(--experience-delay) + 1.1s);
+}
+
+
+@keyframes pacianoLightSweep {
+
+  0% {
+    opacity: 0;
+    transform:
+      translateX(-180%)
+      rotate(12deg);
+  }
+
+  20% {
+    opacity: .7;
+  }
+
+  55% {
+    opacity: .35;
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translateX(430%)
+      rotate(12deg);
+  }
+}
+
+
+/* ==========================================================
+   HOVER — KEEP VERY REFINED
+   ========================================================== */
+
+.paciano-experience:hover .paciano-experience-title {
+  transform: translateY(-2px);
+}
+
+.paciano-experience:hover .paciano-experience-description {
+  transform: translateY(-1px);
+}
+
+.paciano-experience:hover .paciano-experience-icon {
+  transform: translateY(-3px);
+}
+
+
+/* ==========================================================
+   REDUCED MOTION
+   ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .paciano-experience,
+  .paciano-experience-icon,
+  .paciano-experience-title,
+  .paciano-experience-description,
+  .paciano-experience-img,
+  .paciano-experience-image > div:last-child {
+    animation: none !important;
+  }
+
+  .paciano-experience {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* ==========================================================
+   PACIANO — FIVE EXPERIENCE CARDS
+   VERY SUBTLE LUXURY FLOAT
+   ========================================================== */
+
+
+ .paciano-experience-image {
+  animation: pacianoCardFloat 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+.paciano-experience:nth-child(1) .paciano-experience-image {
+  animation-delay: 0s;
+}
+
+.paciano-experience:nth-child(2) .paciano-experience-image {
+  animation-delay: -2s;
+}
+
+.paciano-experience:nth-child(3) .paciano-experience-image {
+  animation-delay: -4s;
+}
+
+.paciano-experience:nth-child(4) .paciano-experience-image {
+  animation-delay: -6s;
+}
+
+.paciano-experience:nth-child(5) .paciano-experience-image {
+  animation-delay: -8s;
+}
+
+@keyframes pacianoCardFloat {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  25% {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -4px, 0);
+  }
+
+  75% {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.paciano-icon-orbit {
+  border: 1px solid rgba(113, 128, 63, 0.18);
+  border-top-color: rgba(113, 128, 63, 0.65);
+  border-right-color: rgba(113, 128, 63, 0.32);
+
+  animation:
+    pacianoIconOrbit
+    12s
+    linear
+    infinite;
+
+  transform-origin: center;
+}
+
+@keyframes pacianoIconOrbit {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+  .paciano-experience:hover .paciano-icon-orbit {
+  animation-duration: 7s;
+  border-top-color: rgba(113, 128, 63, 0.85);
+}
+
+  `}
+      </style>
     </section>
   );
 }

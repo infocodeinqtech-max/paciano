@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import pacianoLogo from "@/images/paciano-logo.png";
 import bookingImage from "@/images/paciano-booking.png";
 
@@ -20,9 +21,11 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
 
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState("2");
+  const [checkIn, setCheckIn] = useState("2026-10-14");
+  const [checkOut, setCheckOut] = useState("2026-10-17");
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  const [pets, setPets] = useState(0);
 
   const handleCheckAvailability = () => {
     if (!checkIn || !checkOut) {
@@ -38,9 +41,10 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
     console.log({
       checkIn,
       checkOut,
-      guests,
+      adults,
+      children,
+      pets,
     });
-
     // Later we can connect this to your actual booking system.
   };
 
@@ -60,10 +64,19 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
   useEffect(() => {
     const shouldLockScroll = menuOpen || bookingOpen;
 
-    document.body.style.overflow = shouldLockScroll ? "hidden" : "";
+    if (shouldLockScroll) {
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
 
     return () => {
       document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
     };
   }, [menuOpen, bookingOpen]);
 
@@ -195,40 +208,40 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
                 type="button"
                 onClick={() => setBookingOpen(!bookingOpen)}
                 className="
-    group
-    relative
-    flex
-    h-[46px]
-    w-[202px]
-    items-center
-    overflow-hidden
-    rounded-full
-    border
-    border-[#b5c96a]/75
-    bg-[#102619]/25
-    backdrop-blur-[6px]
-    transition-all
-    duration-500
-    hover:border-[#c5d57b]
-    hover:bg-[#102619]/40
-  "
+                  group
+                  relative
+                  flex
+                  h-[46px]
+                  w-[202px]
+                  items-center
+                  overflow-hidden
+                  rounded-full
+                  border
+                  border-[#b5c96a]/75
+                  bg-[#102619]/25
+                  backdrop-blur-[6px]
+                  transition-all
+                  duration-500
+                  hover:border-[#c5d57b]
+                  hover:bg-[#102619]/40
+                "
               >
                 {/* BUTTON TEXT */}
                 <span
                   className="
-      flex-1
-      pl-5
-      text-center
-      font-jost
-      text-[10px]
-      font-medium
-      uppercase
-      tracking-[0.18em]
-      text-white/90
-      transition-colors
-      duration-500
-      group-hover:text-[#d0dc8b]
-    "
+                  flex-1
+                  pl-5
+                  text-center
+                  font-jost
+                  text-[10px]
+                  font-medium
+                  uppercase
+                  tracking-[0.18em]
+                  text-white/90
+                  transition-colors
+                  duration-500
+                  group-hover:text-[#d0dc8b]
+                "
                 >
                   Plan Your Stay
                 </span>
@@ -335,13 +348,24 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
         setCheckIn={setCheckIn}
         checkOut={checkOut}
         setCheckOut={setCheckOut}
-        guests={guests}
-        setGuests={setGuests}
+        adults={adults}
+        setAdults={setAdults}
+        children={children}
+        setChildren={setChildren}
+        pets={pets}
+        setPets={setPets}
         onCheckAvailability={handleCheckAvailability}
       />
 
       {/* MOBILE MENU */}
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MobileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onBooking={() => {
+          setMenuOpen(false);
+          setBookingOpen(true);
+        }}
+      />
     </>
   );
 }
@@ -353,8 +377,12 @@ function BookingModal({
   setCheckIn,
   checkOut,
   setCheckOut,
-  guests,
-  setGuests,
+  adults,
+  setAdults,
+  children,
+  setChildren,
+  pets,
+  setPets,
   onCheckAvailability,
 }: {
   open: boolean;
@@ -366,8 +394,14 @@ function BookingModal({
   checkOut: string;
   setCheckOut: (value: string) => void;
 
-  guests: string;
-  setGuests: (value: string) => void;
+  adults: number;
+  setAdults: (value: number) => void;
+
+  children: number;
+  setChildren: (value: number) => void;
+
+  pets: number;
+  setPets: (value: number) => void;
 
   onCheckAvailability: () => void;
 }) {
@@ -448,26 +482,27 @@ function BookingModal({
 
       <div
         className={`
-    relative
-    z-10
+          relative
+          z-10
 
-    w-full
-    max-w-[1160px]
+          w-full
+          max-w-[1240px]
+          max-h-[calc(100vh-32px)]
 
-    overflow-hidden
-    rounded-[20px]
+          overflow-hidden
+          rounded-[20px]
 
-    border
-    border-[#b9aa6b]/65
+          border
+          border-[#b9aa6b]/65
 
-    bg-[#eee9dc]
+          bg-[#eee9dc]
 
-    shadow-[0_40px_120px_rgba(0,0,0,0.45)]
+          shadow-[0_40px_120px_rgba(0,0,0,0.45)]
 
-    transition-all
-    duration-[950ms]
-    delay-[80ms]
-    ease-[cubic-bezier(.16,1,.3,1)]
+          transition-all
+          duration-[950ms]
+          delay-[80ms]
+          ease-[cubic-bezier(.16,1,.3,1)]
 
     ${
       open
@@ -609,10 +644,13 @@ function BookingModal({
         <div
           className="
             relative
+            max-h-[calc(100vh-32px)]
 
             grid
 
             min-h-[590px]
+            overflow-y-auto
+            lg:overflow-y-visible
 
           
           lg:grid-cols-[32%_68%]
@@ -627,6 +665,7 @@ function BookingModal({
     relative
     h-full
     min-h-[560px]
+    lg:min-h-0
     overflow-hidden
     bg-[#16271b]
   "
@@ -775,160 +814,6 @@ function BookingModal({
               </p>
             </div>
 
-            {/* =================================================
-                S-CURVE
-            ================================================= */}
-
-            {/* <div
-              className="
-                pointer-events-none
-                absolute
-                right-[-1px]
-                top-0
-                z-30
-
-                hidden
-                h-full
-                w-[125px]
-
-                lg:block
-              "
-            >
-              <svg
-                viewBox="0 0 125 590"
-                preserveAspectRatio="none"
-                className="h-full w-full"
-              >
-                {/* cream S-shaped fill 
-
-                <path
-                  d="
-                    M125 0
-                    C68 45 45 92 66 151
-                    C86 207 89 250 55 306
-                    C20 364 25 433 72 490
-                    C91 514 105 550 125 590
-                    L125 0
-                    Z
-                  "
-                  fill="#eee9dc"
-                />
-
-                {/* subtle olive contour 
-
-                <path
-                  d="
-                    M124 0
-                    C67 45 44 92 65 151
-                    C85 207 88 250 54 306
-                    C19 364 24 433 71 490
-                    C90 514 104 550 124 590
-                  "
-                  fill="none"
-                  stroke="#9aa365"
-                  strokeOpacity=".45"
-                  strokeWidth="1"
-                />
-              </svg>
-            </div> */}
-            {/* =================================================
-    SINGLE ORGANIC S-CURVE SEPARATOR
-================================================= */}
-
-            {/* <div
-              className="
-    pointer-events-none
-    absolute
-    right-[-1px]
-    top-0
-    z-30
-    hidden
-    h-full
-    w-[120px]
-    lg:block
-  "
-            >
-              <svg
-                viewBox="0 0 120 590"
-                preserveAspectRatio="none"
-                className="h-full w-full"
-              >
-                
-
-                <path
-                  d="
-        M120 0
-
-        C88 24 62 59 54 103
-        C46 148 50 190 63 228
-        C76 266 76 300 62 333
-
-        C43 377 25 411 27 452
-        C29 503 61 548 120 590
-
-        L120 0
-        Z
-      "
-                  fill="#eee9dc"
-                />
-
-               
-
-                <path
-                  d="
-        M120 0
-
-        C88 24 62 59 54 103
-        C46 148 50 190 63 228
-        C76 266 76 300 62 333
-
-        C43 377 25 411 27 452
-        C29 503 61 548 120 590
-      "
-                  fill="none"
-                  stroke="#526744"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-
-               
-                <path
-                  d="
-        M119 0
-
-        C87 24 61 59 53 103
-        C45 148 49 190 62 228
-        C75 266 75 300 61 333
-
-        C42 377 24 411 26 452
-        C28 503 60 548 119 590
-      "
-                  fill="none"
-                  stroke="#a1aa79"
-                  strokeWidth="0.7"
-                  strokeOpacity=".55"
-                />
-              </svg>
-            </div> */}
-            {/* =========================================
-    IMAGE / CONTENT DIVIDER
-========================================= */}
-
-            <div
-              className="
-                pointer-events-none
-                absolute
-                left-[34%]
-                top-0
-                z-30
-                hidden
-                h-full
-                lg:block
-              "
-            >
-              {/* Main fine divider */}
-            </div>
             {/* =================================================
                 MOBILE CURVE
             ================================================= */}
@@ -1130,15 +1015,15 @@ function BookingModal({
               <span
                 className="
                   font-jost
-                  text-[8px]
+                  text-[10px]
                   font-medium
                   uppercase
-                  tracking-[0.34em]
+                  tracking-[0.30em]
 
                   text-[#758055]
                 "
               >
-                Riverside Retreat
+                THE PACIANO PAUSE
               </span>
 
               <span
@@ -1161,9 +1046,9 @@ function BookingModal({
 
                 mt-5
 
-                font-cormorant
-                text-[48px]
-                font-normal
+               font-cormorant
+               
+                uppercase
                 leading-[0.9]
                 tracking-[-0.025em]
 
@@ -1171,7 +1056,7 @@ function BookingModal({
 
                 sm:text-[55px]
 
-                lg:text-[62px]
+                lg:text-[38px]
 
                 transition-all
                 duration-[900ms]
@@ -1200,7 +1085,7 @@ function BookingModal({
                 max-w-[520px]
 
                 font-lora
-                text-[10px]
+                text-[14px]
                 italic
                 leading-[1.7]
 
@@ -1228,10 +1113,7 @@ function BookingModal({
                 relative
                 z-30
 
-                mt-11
-
-                border-y
-                border-[#173321]/15
+                mt-11              
 
                 transition-all
                 duration-700
@@ -1246,7 +1128,7 @@ function BookingModal({
                 className="
                   grid
 
-                  md:grid-cols-[1fr_1fr_0.9fr_126px]
+                 md:grid-cols-[1fr_1fr_1fr_184px]
                 "
               >
                 {/* =========================================
@@ -1259,11 +1141,8 @@ function BookingModal({
                   min={today}
                   onChange={setCheckIn}
                   helper="Choose your arrival"
+                  bordered
                 />
-
-                {/* =========================================
-                    DEPARTURE
-                ========================================= */}
 
                 <LuxuryDateField
                   label="Departure"
@@ -1278,109 +1157,14 @@ function BookingModal({
                     GUESTS
                 ========================================= */}
 
-                <div
-                  className="
-                    min-h-[160px]
-
-                    border-[#173321]/15
-
-                    px-5
-                    py-7
-
-                    md:border-r
-                  "
-                >
-                  <span
-                    className="
-                      font-jost
-                      text-[8px]
-                      font-medium
-                      uppercase
-                      tracking-[0.27em]
-
-                      text-[#7d875d]
-                    "
-                  >
-                    Guests
-                  </span>
-
-                  <div className="relative mt-6">
-                    <select
-                      value={guests}
-                      onChange={(e) => setGuests(e.target.value)}
-                      className="
-                        w-full
-
-                        appearance-none
-
-                        border-0
-                        bg-transparent
-
-                        p-0
-
-                        font-cormorant
-                        text-[24px]
-                        font-normal
-
-                        text-[#17271c]
-
-                        outline-none
-                      "
-                    >
-                      <option value="1">1 Guest</option>
-                      <option value="2">2 Guests</option>
-                      <option value="3">3 Guests</option>
-                      <option value="4">4 Guests</option>
-                      <option value="5">5 Guests</option>
-                      <option value="6">6 Guests</option>
-                      <option value="7">7 Guests</option>
-                      <option value="8">8 Guests</option>
-                    </select>
-
-                    <span
-                      className="
-                        pointer-events-none
-
-                        absolute
-                        right-1
-                        top-1/2
-
-                        -translate-y-1/2
-
-                        text-[13px]
-                        text-[#536151]
-                      "
-                    >
-                      ↓
-                    </span>
-                  </div>
-
-                  <div
-                    className="
-                      mt-5
-
-                      h-px
-                      w-full
-
-                      bg-[#173321]/20
-                    "
-                  />
-
-                  <span
-                    className="
-                      mt-3
-                      block
-
-                      font-lora
-                      text-[9px]
-                      italic
-
-                      text-[#68735f]
-                    "
-                  >
-                    More options
-                  </span>
-                </div>
+                <GuestSelector
+                  adults={adults}
+                  setAdults={setAdults}
+                  children={children}
+                  setChildren={setChildren}
+                  pets={pets}
+                  setPets={setPets}
+                />
 
                 {/* =========================================
                     CHECK AVAILABILITY
@@ -1391,105 +1175,71 @@ function BookingModal({
                   onClick={onCheckAvailability}
                   className="
                     group/availability
-
                     relative
-
                     flex
                     min-h-[160px]
-
                     flex-col
                     items-center
                     justify-center
-
-                    overflow-hidden
-
-                    bg-[#173321]
-
-                    text-[#f5f0e7]
-
-                    transition-all
-                    duration-700
-
-                    hover:bg-[#24472f]
+                    overflow-visible
+                    bg-transparent
+                    text-[#173321]
                   "
                 >
-                  {/* expanding ring */}
-
-                  <span
-                    className="
-                      absolute
-
-                      left-1/2
-                      top-1/2
-
-                      h-[62px]
-                      w-[62px]
-
-                      -translate-x-1/2
-                      -translate-y-1/2
-
-                      rounded-full
-
-                      border
-                      border-[#c6d477]/70
-
-                      transition-all
-                      duration-700
-
-                      group-hover/availability:h-[82px]
-                      group-hover/availability:w-[82px]
-                    "
-                  />
-
-                  {/* arrow circle */}
-
                   <span
                     className="
                       relative
-                      z-10
-
                       flex
-                      h-[58px]
-                      w-[58px]
-
+                      h-[150px]
+                      w-[150px]
+                      shrink-0
                       items-center
                       justify-center
-
                       rounded-full
-
-                      border
-                      border-[#c6d477]
-
-                      transition-all
+                      bg-[#173321]
+                      transition-transform
                       duration-700
-
-                      group-hover/availability:bg-[#c6d477]
-                      group-hover/availability:text-[#173321]
+                      ease-out
+                      group-hover/availability:scale-[1.02]
                     "
                   >
+                    <span
+                      className="
+                        absolute
+                        h-[72px]
+                        w-[72px]
+                        rounded-full
+                        border
+                        border-[#c6d477]
+                        transition-transform
+                        duration-700
+                        group-hover/availability:scale-[1.04]
+                      "
+                    />
+
                     <svg
-                      width="22"
-                      height="22"
+                      width="24"
+                      height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       className="
+                        relative
+                        z-10
                         transition-transform
                         duration-500
-
                         group-hover/availability:translate-x-1
                       "
                     >
                       <path
-                        d="M4 12H19"
-                        stroke="currentColor"
-                        strokeWidth="1.4"
+                        d="M5 12H18"
+                        stroke="#F5F0E7"
+                        strokeWidth="1.3"
                         strokeLinecap="round"
                       />
-
                       <path
-                        d="M13 6L19 12L13 18"
-                        stroke="currentColor"
-                        strokeWidth="1.4"
+                        d="M13.5 7.5L18 12L13.5 16.5"
+                        stroke="#F5F0E7"
+                        strokeWidth="1.3"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
@@ -1498,20 +1248,15 @@ function BookingModal({
 
                   <span
                     className="
-                      relative
-                      z-10
-
-                      mt-5
-
+                      mt-2
                       text-center
-
                       font-jost
-                      text-[8px]
+                      text-[10px]
                       font-medium
                       uppercase
-                      leading-[1.8]
-
-                      tracking-[0.25em]
+                      leading-[1.65]
+                      tracking-[0.24em]
+                      text-[#173321]
                     "
                   >
                     Check
@@ -1523,25 +1268,17 @@ function BookingModal({
             </div>
 
             {/* =================================================
-                FOOTER
+                FOOTER — REFERENCE STYLE
             ================================================= */}
 
             <div
               className={`
                 relative
                 z-30
-
                 mt-7
-
-                flex
-
-                flex-col
-                gap-5
-
-                sm:flex-row
-                sm:items-end
-                sm:justify-between
-
+                border-t
+                border-[#173321]/10
+                pt-5
                 transition-all
                 duration-700
                 delay-[650ms]
@@ -1551,63 +1288,54 @@ function BookingModal({
                 }
               `}
             >
-              <div>
-                <div
-                  className="
-                    mb-3
-                    h-px
-                    w-[34px]
+              <div className="grid grid-cols-2 items-end">
+                {/* LEFT — EXPERIENCE TAGLINE */}
+                <div className="pr-8">
+                  <p
+                    className="
+                      font-lora
+                      text-[11px]
+                      italic
+                      leading-[1.5]
+                      text-[#536151]
+                    "
+                  >
+                    Riverside calm
+                    <span className="mx-2 text-[#9aaa50]">·</span>
+                    Tea gardens
+                    <span className="mx-2 text-[#9aaa50]">·</span>
+                    Slow living
+                  </p>
+                </div>
 
-                    bg-[#9ba46f]
-                  "
-                />
+                {/* RIGHT — BRAND */}
+                <div className="border-l border-[#173321]/10 pl-8 text-right">
+                  <p
+                    className="
+                      font-jost
+                      text-[10px]
+                      font-medium
+                      uppercase
+                      tracking-[0.34em]
+                      text-[#738143]
+                    "
+                  >
+                    Paciano
+                  </p>
 
-                <p
-                  className="
-                    font-lora
-                    text-[11px]
-                    italic
-
-                    text-[#536151]
-                  "
-                >
-                  Riverside calm
-                  <span className="mx-2 text-[#9aaa50]">·</span>
-                  Tea gardens
-                  <span className="mx-2 text-[#9aaa50]">·</span>
-                  Slow living
-                </p>
-              </div>
-
-              <div className="text-right">
-                <p
-                  className="
-                    font-jost
-                    text-[10px]
-                    font-medium
-                    uppercase
-                    tracking-[0.32em]
-
-                    text-[#738143]
-                  "
-                >
-                  PACIANO
-                </p>
-
-                <p
-                  className="
-                    mt-2
-
-                    font-jost
-                    text-[7px]
-                    uppercase
-                    tracking-[0.28em]
-
-                    text-[#89917d]
-                  "
-                >
-                  Stay a little longer
-                </p>
+                  <p
+                    className="
+                      mt-2
+                      font-jost
+                      text-[10px]
+                      uppercase
+                      tracking-[0.30em]
+                      text-[#89917d]
+                    "
+                  >
+                    Stay a little longer
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -1668,21 +1396,42 @@ function LuxuryDateField({
   helper: string;
   bordered?: boolean;
 }) {
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [viewDate, setViewDate] = useState(() => {
+    const base = value || min || new Date().toISOString().split("T")[0];
+    const parsed = new Date(`${base}T00:00:00`);
+    return new Date(parsed.getFullYear(), parsed.getMonth(), 1);
+  });
+
+  const dateButtonRef = useRef<HTMLButtonElement | null>(null);
+  const calendarButtonRef = useRef<HTMLButtonElement | null>(null);
+  const calendarPanelRef = useRef<HTMLDivElement | null>(null);
+  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
+
+  const todayString = new Date().toISOString().split("T")[0];
+
+  const parseDate = (dateString: string) => new Date(`${dateString}T00:00:00`);
+
+  const toDateString = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const formatted = value
     ? (() => {
-        const date = new Date(`${value}T00:00:00`);
+        const date = parseDate(value);
 
         return {
           day: date.toLocaleDateString("en-GB", {
             day: "2-digit",
           }),
-
           month: date
             .toLocaleDateString("en-GB", {
               month: "short",
             })
             .toUpperCase(),
-
           year: date.toLocaleDateString("en-GB", {
             year: "numeric",
           }),
@@ -1694,105 +1443,206 @@ function LuxuryDateField({
         year: "----",
       };
 
+  const updateCalendarPosition = () => {
+    const anchor = calendarButtonRef.current ?? dateButtonRef.current;
+    if (!anchor) return;
+
+    const rect = anchor.getBoundingClientRect();
+    const panelWidth = 300;
+    const panelHeight = 350;
+    const gap = 12;
+
+    let left = rect.left + rect.width / 2 - panelWidth / 2;
+    let top = rect.bottom + gap;
+
+    if (left < 16) left = 16;
+    if (left + panelWidth > window.innerWidth - 16) {
+      left = window.innerWidth - panelWidth - 16;
+    }
+
+    if (top + panelHeight > window.innerHeight - 16) {
+      top = rect.top - panelHeight - gap;
+    }
+
+    if (top < 16) top = 16;
+
+    setCalendarPosition({ top, left });
+  };
+
+  const openCalendar = () => {
+    updateCalendarPosition();
+    setCalendarOpen(true);
+  };
+
+  useEffect(() => {
+    if (!calendarOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        calendarButtonRef.current?.contains(target) ||
+        calendarPanelRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setCalendarOpen(false);
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setCalendarOpen(false);
+      }
+    };
+
+    const handleViewportChange = () => {
+      updateCalendarPosition();
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+    window.addEventListener("resize", handleViewportChange);
+    window.addEventListener("scroll", handleViewportChange, true);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("resize", handleViewportChange);
+      window.removeEventListener("scroll", handleViewportChange, true);
+    };
+  }, [calendarOpen]);
+
+  useEffect(() => {
+    if (!calendarOpen) return;
+
+    const base = value || min || todayString;
+    const parsed = parseDate(base);
+    setViewDate(new Date(parsed.getFullYear(), parsed.getMonth(), 1));
+  }, [calendarOpen, value, min]);
+
+  const monthLabel = viewDate.toLocaleDateString("en-US", {
+    month: "long",
+  });
+
+  const yearLabel = viewDate.getFullYear();
+
+  const firstDay = new Date(
+    viewDate.getFullYear(),
+    viewDate.getMonth(),
+    1,
+  ).getDay();
+
+  // Monday-first calendar.
+  const mondayFirstOffset = (firstDay + 6) % 7;
+
+  const daysInMonth = new Date(
+    viewDate.getFullYear(),
+    viewDate.getMonth() + 1,
+    0,
+  ).getDate();
+
+  const days = Array.from(
+    { length: mondayFirstOffset + daysInMonth },
+    (_, i) => {
+      if (i < mondayFirstOffset) return null;
+      return i - mondayFirstOffset + 1;
+    },
+  );
+
+  const goToPreviousMonth = () => {
+    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 1));
+  };
+
+  const minimumDate = min ? parseDate(min) : null;
+
+  const isDisabled = (dateString: string) => {
+    if (!minimumDate) return false;
+    return parseDate(dateString) < minimumDate;
+  };
+
+  const isSelected = (dateString: string) => value === dateString;
+  const isToday = (dateString: string) => todayString === dateString;
+
+  const selectDate = (dateString: string) => {
+    if (isDisabled(dateString)) return;
+
+    onChange(dateString);
+    setCalendarOpen(false);
+  };
+
   return (
     <label
       className={`
         group/date
-
         relative
-
         flex
         min-h-[160px]
-
         cursor-pointer
         flex-col
         justify-center
-
         px-5
         py-7
-
         transition-all
         duration-500
-
         hover:bg-[#e6e0d3]/55
-
-        ${bordered ? "border-[#173321]/15 md:border-r" : ""}
+        ${bordered ? "border-[#173321]/18 md:border-r" : ""}
       `}
     >
-      {/* ===============================================
-          NATIVE DATE INPUT
-      =============================================== */}
-
-      <input
-        type="date"
-        value={value}
-        min={min}
-        onChange={(e) => onChange(e.target.value)}
-        className="
-          absolute
-          inset-0
-          z-20
-
-          h-full
-          w-full
-
-          cursor-pointer
-
-          opacity-0
-        "
-      />
-
-      {/* ===============================================
-          LABEL
-      =============================================== */}
-
       <span
         className="
           relative
           z-10
-
           font-jost
-          text-[8px]
+          text-[11px]
           font-medium
           uppercase
-          tracking-[0.27em]
-
+          tracking-[0.28em]
           text-[#7d875d]
         "
       >
         {label}
       </span>
 
-      {/* ===============================================
-          DATE
-      =============================================== */}
-
       <div
         className="
           relative
           z-10
-
-          mt-5
-
+          mt-4
           flex
           items-center
           justify-between
+          pb-4          
         "
       >
-        <div className="flex items-baseline gap-3">
+        <button
+          type="button"
+          onClick={openCalendar}
+          className="
+            flex
+            items-center
+            gap-3
+            text-left
+            outline-none
+          "
+          aria-label={`Choose ${label.toLowerCase()} date`}
+          ref={dateButtonRef}
+        >
           <span
             className="
               font-cormorant
-              text-[46px]
+              text-[56px]
               font-normal
-              leading-none
-
-              text-[#17271c]
-
-              transition-all
+              leading-[0.86]
+              tracking-[-0.025em]
+              text-[#102619]
+              transition-colors
               duration-500
-
-              group-hover/date:text-[#7c953f]
+              group-hover/date:text-[#667238]
             "
           >
             {formatted.day}
@@ -1802,52 +1652,48 @@ function LuxuryDateField({
             className="
               flex
               flex-col
-
+              justify-center
+              self-center
+              translate-y-[4px]
               font-jost
-              text-[8px]
+              text-[11px]
               font-medium
               uppercase
-              leading-[1.35]
-
+              leading-[1.15]
               tracking-[0.08em]
-
-              text-[#465347]
+              text-[#4f5d38]
             "
           >
             <span>{formatted.month}</span>
             <span>{formatted.year}</span>
           </span>
-        </div>
+        </button>
 
-        {/* =============================================
-            CALENDAR ICON
-        ============================================= */}
-
-        <span
+        <button
+          type="button"
+          ref={calendarButtonRef}
+          onClick={openCalendar}
+          aria-label={`Open ${label.toLowerCase()} calendar`}
           className="
             flex
-            h-[40px]
-            w-[40px]
-
+            h-[46px]
+            w-[46px]
             shrink-0
-
             items-center
             justify-center
-
             rounded-full
-
+            border
+            border-[#b4b9a0]
             bg-[#e4ded0]
-
-            text-[#24372b]
-
+            text-[#30432f]
             transition-all
             duration-500
-
-            group-hover/date:bg-[#d7dfba]
-            group-hover/date:rotate-[-7deg]
+            hover:border-[#7d8a4d]
+            hover:bg-[#d7dfba]
+            hover:text-[#536634]
           "
         >
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <rect
               x="3.5"
               y="5"
@@ -1855,28 +1701,24 @@ function LuxuryDateField({
               height="15"
               rx="1.5"
               stroke="currentColor"
-              strokeWidth="1.3"
+              strokeWidth="1.25"
             />
-
             <path
-              d="M7 3V7"
+              d="M7 3V7M17 3V7"
               stroke="currentColor"
-              strokeWidth="1.3"
+              strokeWidth="1.25"
               strokeLinecap="round"
             />
-
+            <path d="M3.5 9H20.5" stroke="currentColor" strokeWidth="1.25" />
             <path
-              d="M17 3V7"
+              d="M7.5 12.5H7.51M12 12.5H12.01M16.5 12.5H16.51M7.5 16H7.51M12 16H12.01"
               stroke="currentColor"
-              strokeWidth="1.3"
+              strokeWidth="1.5"
               strokeLinecap="round"
             />
-
-            <path d="M3.5 9H20.5" stroke="currentColor" strokeWidth="1.3" />
           </svg>
-        </span>
+        </button>
       </div>
-
       {/* ===============================================
           UNDERLINE
       =============================================== */}
@@ -1886,7 +1728,7 @@ function LuxuryDateField({
           relative
           z-10
 
-          mt-5
+          mt-4
 
           h-px
           w-full
@@ -1902,27 +1744,569 @@ function LuxuryDateField({
         "
       />
 
-      {/* ===============================================
-          HELPER
-      =============================================== */}
-
       <span
         className="
           relative
           z-10
-
           mt-3
-
+          whitespace-nowrap
           font-lora
-          text-[9px]
+          text-[12px]
           italic
-
-          text-[#68735f]
+          leading-[1.35]
+          text-[#5f6957]
         "
       >
         {helper}
       </span>
+
+      {calendarOpen &&
+        createPortal(
+          <div
+            ref={calendarPanelRef}
+            className="
+              fixed
+              z-[9999]
+              w-[300px]
+              overflow-hidden
+              rounded-[18px]
+              border
+              border-[#a5ad7a]/70
+              bg-[#f1ede2]/[0.985]
+              shadow-[0_28px_80px_rgba(20,37,25,0.24)]
+              backdrop-blur-xl
+            "
+            style={{
+              top: `${calendarPosition.top}px`,
+              left: `${calendarPosition.left}px`,
+            }}
+            role="dialog"
+            aria-label={`${label} date picker`}
+          >
+            <div className="relative px-5 pb-4 pt-5">
+              <div className="absolute left-5 top-0 h-px w-12 bg-[#8e9a5b]" />
+
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-jost text-[8px] font-medium uppercase tracking-[0.28em] text-[#788454]">
+                    Select {label}
+                  </p>
+                  <p className="mt-1 font-cormorant text-[28px] leading-none tracking-[-0.015em] text-[#173321]">
+                    {monthLabel}
+                    <span className="ml-2 text-[#6d7948]">{yearLabel}</span>
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setCalendarOpen(false)}
+                  className="
+                    flex
+                    h-8
+                    w-8
+                    items-center
+                    justify-center
+                    rounded-full
+                    text-[#526044]
+                    transition-colors
+                    hover:bg-[#dde3cb]
+                  "
+                  aria-label="Close calendar"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between border-y border-[#173321]/10 py-2">
+                <button
+                  type="button"
+                  onClick={goToPreviousMonth}
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-[#526044] transition-colors hover:bg-[#dde3cb]"
+                  aria-label="Previous month"
+                >
+                  ←
+                </button>
+
+                <span className="font-jost text-[8px] font-medium uppercase tracking-[0.24em] text-[#879063]">
+                  {monthLabel} {yearLabel}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={goToNextMonth}
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-[#526044] transition-colors hover:bg-[#dde3cb]"
+                  aria-label="Next month"
+                >
+                  →
+                </button>
+              </div>
+
+              <div className="mt-4 grid grid-cols-7 gap-y-1 text-center">
+                {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map(
+                  (dayName) => (
+                    <span
+                      key={dayName}
+                      className="font-jost text-[8px] font-medium tracking-[0.12em] text-[#8b927c]"
+                    >
+                      {dayName}
+                    </span>
+                  ),
+                )}
+
+                {days.map((day, index) => {
+                  if (!day) {
+                    return <span key={`empty-${index}`} className="h-9" />;
+                  }
+
+                  const date = new Date(
+                    viewDate.getFullYear(),
+                    viewDate.getMonth(),
+                    day,
+                  );
+                  const dateString = toDateString(date);
+                  const disabled = isDisabled(dateString);
+                  const selected = isSelected(dateString);
+                  const today = isToday(dateString);
+
+                  return (
+                    <button
+                      key={dateString}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => selectDate(dateString)}
+                      className={`
+                        mx-auto
+                        flex
+                        h-9
+                        w-9
+                        items-center
+                        justify-center
+                        rounded-full
+                        font-cormorant
+                        text-[17px]
+                        leading-none
+                        transition-all
+                        duration-200
+                        ${
+                          selected
+                            ? "bg-[#667238] text-[#f6f2e9] shadow-[0_6px_16px_rgba(102,114,56,0.24)]"
+                            : today
+                              ? "border border-[#82904f] text-[#536331] hover:bg-[#e0e5cf]"
+                              : "text-[#344437] hover:bg-[#e1e5d7] hover:text-[#596832]"
+                        }
+                        ${disabled ? "cursor-not-allowed text-[#b8bbae] opacity-40 hover:bg-transparent hover:text-[#b8bbae]" : ""}
+                      `}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 flex items-center justify-between border-t border-[#173321]/10 pt-3">
+                <span className="font-lora text-[10px] italic text-[#68735f]">
+                  {value
+                    ? `Selected ${formatted.day} ${formatted.month} ${formatted.year}`
+                    : "Choose a date to continue"}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const todayDate = parseDate(todayString);
+                    const candidate = min
+                      ? todayDate < parseDate(min)
+                        ? parseDate(min)
+                        : todayDate
+                      : todayDate;
+
+                    const dateString = toDateString(candidate);
+                    onChange(dateString);
+                    setViewDate(
+                      new Date(
+                        candidate.getFullYear(),
+                        candidate.getMonth(),
+                        1,
+                      ),
+                    );
+                    setCalendarOpen(false);
+                  }}
+                  className="
+                    font-jost
+                    text-[8px]
+                    font-medium
+                    uppercase
+                    tracking-[0.18em]
+                    text-[#667238]
+                    transition-colors
+                    hover:text-[#3e4c2d]
+                  "
+                >
+                  Today
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </label>
+  );
+}
+
+function GuestSelector({
+  adults,
+  setAdults,
+  children,
+  setChildren,
+  pets,
+  setPets,
+}: {
+  adults: number;
+  setAdults: (value: number) => void;
+  children: number;
+  setChildren: (value: number) => void;
+  pets: number;
+  setPets: (value: number) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const guestButtonRef = useRef<HTMLButtonElement | null>(null);
+  const guestPanelRef = useRef<HTMLDivElement | null>(null);
+  const [panelPosition, setPanelPosition] = useState({ top: 0, left: 0 });
+
+  const totalGuests = adults + children;
+
+  const updateCount = (
+    current: number,
+    setter: (value: number) => void,
+    delta: number,
+    minimum = 0,
+  ) => {
+    setter(Math.max(minimum, current + delta));
+  };
+
+  const updatePanelPosition = () => {
+    const anchor = guestButtonRef.current;
+    if (!anchor) return;
+
+    const rect = anchor.getBoundingClientRect();
+    const panelWidth = 300;
+    const panelHeight = 300;
+    const gap = 12;
+
+    let left = rect.left + rect.width / 2 - panelWidth / 2;
+    let top = rect.bottom + gap;
+
+    if (left < 16) left = 16;
+    if (left + panelWidth > window.innerWidth - 16) {
+      left = window.innerWidth - panelWidth - 16;
+    }
+
+    // Prefer opening downward, but move above the field when needed.
+    if (top + panelHeight > window.innerHeight - 16) {
+      top = rect.top - panelHeight - gap;
+    }
+
+    if (top < 16) top = 16;
+
+    setPanelPosition({ top, left });
+  };
+
+  const toggleGuests = () => {
+    updatePanelPosition();
+    setOpen((current) => !current);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        guestButtonRef.current?.contains(target) ||
+        guestPanelRef.current?.contains(target)
+      ) {
+        return;
+      }
+
+      setOpen(false);
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    const handleViewportChange = () => updatePanelPosition();
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+    window.addEventListener("resize", handleViewportChange);
+    window.addEventListener("scroll", handleViewportChange, true);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("resize", handleViewportChange);
+      window.removeEventListener("scroll", handleViewportChange, true);
+    };
+  }, [open]);
+
+  return (
+    <div
+      className="
+        relative
+        min-h-[160px]
+        border-[#173321]/15
+        px-5
+        py-7
+        md:border-r
+      "
+    >
+      <span
+        className="
+          block
+          font-jost
+          text-[11px]
+          font-medium
+          uppercase
+          tracking-[0.28em]
+          text-[#7d875d]
+        "
+      >
+        Guests
+      </span>
+
+      <button
+        type="button"
+        ref={guestButtonRef}
+        onClick={toggleGuests}
+        className="
+          group/guest
+          mt-6
+          flex
+          w-full
+          items-center
+          justify-between
+          pb-4
+          text-left
+          outline-none          
+        "
+      >
+        <span
+          className="
+            font-cormorant
+            text-[25px]
+            font-normal
+            leading-none
+            text-[#24372b]
+            transition-colors
+            duration-300
+            group-hover/guest:text-[#667238]
+          "
+        >
+          {adults} Adult{adults !== 1 ? "s" : ""}
+        </span>
+
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          className={`
+            text-[#536151]
+            transition-transform
+            duration-300
+            ${open ? "rotate-180" : ""}
+          `}
+        >
+          <path
+            d="M6 9L12 15L18 9"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
+      <div className="mt-7 h-px w-full bg-[#173321]/20" />
+
+      <button
+        type="button"
+        onClick={toggleGuests}
+        className="
+          mt-3
+          block
+          font-lora
+          text-[12px]
+          italic
+          text-[#68735f]
+        "
+      >
+        More Options
+      </button>
+
+      {open &&
+        createPortal(
+          <div
+            ref={guestPanelRef}
+            className="
+              fixed
+              z-[9998]
+              w-[300px]
+              overflow-hidden
+              rounded-[18px]
+              border
+              border-[#a7ae80]/55
+              bg-[#f2eee3]/[0.99]
+              shadow-[0_30px_80px_rgba(23,51,33,0.24)]
+              backdrop-blur-xl
+            "
+            style={{
+              top: `${panelPosition.top}px`,
+              left: `${panelPosition.left}px`,
+            }}
+            role="dialog"
+            aria-label="Select guests"
+          >
+            <div className="relative px-5 pb-4 pt-5">
+              <div className="absolute left-5 top-0 h-px w-14 bg-[#8e9a5b]" />
+
+              <div className="flex items-end justify-between">
+                <div>
+                  <p className="font-jost text-[8px] font-medium uppercase tracking-[0.28em] text-[#7d875d]">
+                    Your party
+                  </p>
+                  <h3 className="mt-1 font-cormorant text-[28px] leading-none tracking-[-0.015em] text-[#173321]">
+                    Guests
+                  </h3>
+                </div>
+
+                <span className="font-lora text-[13px] italic text-[#7b846f]">
+                  {totalGuests} guest{totalGuests !== 1 ? "s" : ""}
+                </span>
+              </div>
+
+              <div className="mt-5 divide-y divide-[#173321]/10 border-y border-[#173321]/10">
+                <GuestCounter
+                  label="Adults"
+                  value={adults}
+                  minimum={1}
+                  onDecrease={() => updateCount(adults, setAdults, -1, 1)}
+                  onIncrease={() => updateCount(adults, setAdults, 1, 1)}
+                />
+
+                <GuestCounter
+                  label="Children"
+                  value={children}
+                  minimum={0}
+                  onDecrease={() => updateCount(children, setChildren, -1)}
+                  onIncrease={() => updateCount(children, setChildren, 1)}
+                />
+
+                <GuestCounter
+                  label="Pets"
+                  value={pets}
+                  minimum={0}
+                  onDecrease={() => updateCount(pets, setPets, -1)}
+                  onIncrease={() => updateCount(pets, setPets, 1)}
+                />
+              </div>
+
+              <div className="mt-3 flex items-center justify-between">
+                <span className="font-lora text-[11px] italic text-[#7a836e]">
+                  Pets are optional
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="
+                    rounded-full
+                    border
+                    border-[#7d8b56]/45
+                    px-5
+                    py-2
+                    font-jost
+                    text-[10px]
+                    font-medium
+                    uppercase
+                    tracking-[0.24em]
+                    text-[#52623a]
+                    transition-all
+                    duration-300
+                    hover:bg-[#dce2ca]
+                  "
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+    </div>
+  );
+}
+
+function GuestCounter({
+  label,
+  value,
+  minimum,
+  onDecrease,
+  onIncrease,
+}: {
+  label: string;
+  value: number;
+  minimum: number;
+  onDecrease: () => void;
+  onIncrease: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between border-b border-[#173321]/10 py-3">
+      <span className="font-lora text-[13px] text-[#344437]">{label}</span>
+
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onDecrease}
+          disabled={value <= minimum}
+          aria-label={`Decrease ${label}`}
+          className="
+            flex h-7 w-7 items-center justify-center
+            rounded-full
+            border border-[#526744]/30
+            text-[#526744]
+            transition-colors
+            hover:bg-[#dfe4cb]
+            disabled:cursor-not-allowed
+            disabled:opacity-30
+          "
+        >
+          −
+        </button>
+
+        <span className="w-5 text-center font-jost text-[11px] text-[#24372b]">
+          {value}
+        </span>
+
+        <button
+          type="button"
+          onClick={onIncrease}
+          aria-label={`Increase ${label}`}
+          className="
+            flex h-7 w-7 items-center justify-center
+            rounded-full
+            border border-[#526744]/30
+            text-[#526744]
+            transition-colors
+            hover:bg-[#dfe4cb]
+          "
+        >
+          +
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -2184,6 +2568,7 @@ function DateField({
     </label>
   );
 }
+
 function NavItem({
   label,
   href,
@@ -2248,7 +2633,15 @@ text-white/85
   );
 }
 
-function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+function MobileMenu({
+  open,
+  onClose,
+  onBooking,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onBooking: () => void;
+}) {
   return (
     <div
       className={`
@@ -2327,12 +2720,12 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
 
         {/* BOOKING */}
         <div className="mt-auto">
-          <a
-            href="#booking"
+          <button
+            type="button"
+            onClick={onBooking}
             className="
     group
-    hidden
-    lg:flex
+    flex
     items-center
     gap-3
 
@@ -2340,7 +2733,7 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
     text-[14px]
     font-medium
     tracking-[0.015em]
-    text-[#f5f1e8]
+    text-[#173321]
 
     transition-all
     duration-500
@@ -2398,12 +2791,12 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
             >
               ↗
             </span>
-          </a>
+          </button>
           <p
             className="
               mt-5
               text-center
-              font-paciano-ui
+              font-jost
               text-[10px]
               uppercase
               tracking-[0.22em]
