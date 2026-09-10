@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import AboutUs from "./components/AboutUs";
+import Accommodation from "./components/Accommodation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCanadianMapleLeaf } from "@fortawesome/free-brands-svg-icons";
 import storyImage from "@/images/story.png";
@@ -1032,28 +1033,21 @@ export default function App() {
       <main className="overflow-hidden bg-[#ece6d8]">
         {/* CHAPTER 01 — ARRIVAL */}
         <HeroSection />
-
         {/* CHAPTER 02 — THE STORY */}
         {/* <div className="relative z-20 -mt-[90px]">
           <StoryIntroSection />
         </div> */}
-
         <AboutUs />
         {/* CHAPTER 03 — STAY */}
-        {/* <ImmersiveStaySection /> */}
-
+        <Accommodation />
         {/* CHAPTER 04 — THE RIVER */}
         {/* <RiverJourneySection /> */}
-
         {/* CHAPTER 05 — EXPERIENCES */}
         {/* <ExperiencesSection /> */}
-
         {/* CHAPTER 06 — INDULGENCE */}
         {/* <IndulgenceSection /> */}
-
         {/* CHAPTER 07 — NIGHTFALL */}
         {/* <NightfallSection /> */}
-
         {/* FINAL CHAPTER — YOUR ESCAPE */}
         {/* <EscapeCTASection /> */}
       </main>
