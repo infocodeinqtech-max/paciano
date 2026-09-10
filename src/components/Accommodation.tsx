@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import riversideRoom from "@/images/river-side-room.png";
 import riversideBalcony from "@/images/river-side-room.png";
@@ -17,2236 +17,833 @@ import mistMountains from "@/images/paciano-mist-mountains.png";
 // TYPES
 // ============================================================
 
-type AmenityIconType = "bed" | "balcony" | "view" | "bath" | "wifi";
-
 type Stay = {
   id: string;
+  category: string;
   name: string;
-  eyebrow: string;
-  title: string;
   description: string;
-
   images: string[];
-
-  amenities: {
-    label: string;
-    icon: AmenityIconType;
-  }[];
+  features: string[];
+  eyebrow?: string;
 };
 
-// ============================================================
-// STAYS
-// ============================================================
 
-const stays: Stay[] = [
+const DEFAULT_STAYS: Stay[] = [
   {
     id: "riverside",
-    name: "Riverside Suite",
+    category: "Riverside Suite",
     eyebrow: "RIVERSIDE SUITE",
-    title: "Wake to Tranquility",
+    name: "Riverfront Serenity",
     description:
-      "Wake to the gentle rhythm of the river, framed by mountains and softened by the quiet of nature.",
-
-    images: [riversideRoom, riversideBalcony, riversideDetail],
-
-    amenities: [
-      {
-        label: "King Bed",
-        icon: "bed",
-      },
-      {
-        label: "Private Balcony",
-        icon: "balcony",
-      },
-      {
-        label: "River & Mountain View",
-        icon: "view",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
+      "Wake to the gentle rhythm of the river and unwind in a space where modern comfort meets nature’s calm.",
+    images: [
+      riversideRoom,
+      riversideBalcony,
+      riversideDetail,
+    ],
+    features: [
+      "King Bed",
+      "River View",
+      "Private Balcony",
+      "Outdoor Seating",
     ],
   },
 
   {
     id: "garden",
-    name: "Garden Residence",
+    category: "Garden Residence",
     eyebrow: "GARDEN RESIDENCE",
-    title: "Wake Among Greenery",
+    name: "Garden Sanctuary",
     description:
-      "A peaceful retreat overlooking Paciano's gardens, where quiet mornings unfold beneath open skies and surrounding greenery.",
-
-    images: [gardenRoom, gardenView, gardenBalcony],
-
-    amenities: [
-      {
-        label: "King Bed",
-        icon: "bed",
-      },
-      {
-        label: "Garden Outlook",
-        icon: "view",
-      },
-      {
-        label: "Private Sitting Area",
-        icon: "balcony",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
+      "A quiet residence surrounded by greenery, crafted for slow mornings, private moments and effortless comfort.",
+    images: [
+      gardenRoom,
+      gardenView,
+      gardenBalcony,
+    ],
+    features: [
+      "King Bed",
+      "Garden View",
+      "Private Terrace",
+      "Outdoor Seating",
     ],
   },
 
   {
     id: "valley",
-    name: "Valley Retreat",
+    category: "Valley Retreat",
     eyebrow: "VALLEY RETREAT",
-    title: "Closer to the Wild",
+    name: "Mountain Stillness",
     description:
-      "A quiet escape where mountain views stretch beyond the room and every morning begins a little slower.",
-    images: [riversideRoom, riversideDetail, riversideBalcony],
-    amenities: [
-      {
-        label: "King Bed",
-        icon: "bed",
-      },
-      {
-        label: "Private Balcony",
-        icon: "balcony",
-      },
-      {
-        label: "Valley View",
-        icon: "view",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
+      "Open views, generous space and the stillness of the hills come together in a retreat made for deeper rest.",
+    images: [    
+      riversideDetail,
+      gardenView,
+    ],
+    features: [
+      "King Bed",
+      "Mountain View",
+      "Private Balcony",
+      "Lounge Area",
     ],
   },
 
   {
     id: "family",
-    name: "Family Sanctuary",
+    category: "Family Sanctuary",
     eyebrow: "FAMILY SANCTUARY",
-    title: "Space to Be Together",
+    name: "A Place Together",
     description:
-      "Thoughtfully arranged for families, with generous space to slow down, reconnect and enjoy the landscape together.",
-
-    images: [familyRoom, familyRoomTwo, familyView],
-
-    amenities: [
-      {
-        label: "Two Comfortable Beds",
-        icon: "bed",
-      },
-      {
-        label: "Spacious Interior",
-        icon: "balcony",
-      },
-      {
-        label: "Nature View",
-        icon: "view",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
+      "Thoughtfully designed for togetherness, with room to breathe, reconnect and create unhurried memories.",
+    images: [
+      familyRoom,
+      familyRoomTwo,
+      familyView,
+    ],
+    features: [
+      "2 King Beds",
+      "Garden View",
+      "Private Balcony",
+      "Family Lounge",
     ],
   },
 ];
 
-// ============================================================
-// AMENITY ICON
-// ============================================================
+type AccommodationProps = {
+  stays?: Stay[];
+  onStaySelect?: (stay: Stay) => void;
+};
 
-function AmenityIcon({ type }: { type: AmenityIconType }) {
-  const className = "w-[18px] h-[18px] stroke-[1.2]";
-
-  if (type === "bed") {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className}>
-        <path
-          d="M3 18v-7.5c0-.83.67-1.5 1.5-1.5h15c.83 0 1.5.67 1.5 1.5V18"
-          stroke="currentColor"
-        />
-        <path d="M3 14h18" stroke="currentColor" />
-        <path
-          d="M5 9V6.5A1.5 1.5 0 0 1 6.5 5h4A1.5 1.5 0 0 1 12 6.5V9"
-          stroke="currentColor"
-        />
-        <path d="M3 18v2M21 18v2" stroke="currentColor" />
-      </svg>
-    );
-  }
-
-  if (type === "balcony") {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className}>
-        <path d="M4 5h16M5 5v5h14V5M3 10h18" stroke="currentColor" />
-        <path d="M6 10v8M10 10v8M14 10v8M18 10v8" stroke="currentColor" />
-        <path d="M3 18h18" stroke="currentColor" />
-      </svg>
-    );
-  }
-
-  if (type === "view") {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className}>
-        <path d="M3 19h18" stroke="currentColor" />
-        <path d="M4 18l6-7 3 3 4-6 3 10" stroke="currentColor" />
-      </svg>
-    );
-  }
-
-  if (type === "bath") {
-    return (
-      <svg viewBox="0 0 24 24" fill="none" className={className}>
-        <path
-          d="M4 12h16v3.5A3.5 3.5 0 0 1 16.5 19h-9A3.5 3.5 0 0 1 4 15.5V12Z"
-          stroke="currentColor"
-        />
-        <path d="M6 12V7a2 2 0 0 1 4 0v1" stroke="currentColor" />
-        <path d="M10 8h5" stroke="currentColor" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className={className}>
-      <path d="M4 10.5a10 10 0 0 1 16 0" stroke="currentColor" />
-      <path d="M7 13.5a6.5 6.5 0 0 1 10 0" stroke="currentColor" />
-      <path d="M10 16.5a3 3 0 0 1 4 0" stroke="currentColor" />
-      <circle cx="12" cy="20" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
-// ============================================================
-// COMPONENT
-// ============================================================
-
-export default function Accommodation() {
+export default function Accomodation({
+  stays = DEFAULT_STAYS,
+  onStaySelect,
+}: AccommodationProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const [isChanging, setIsChanging] = useState(false);
+  const [isSectionVisible, setIsSectionVisible] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // Current room
-  const [activeStay, setActiveStay] = useState(0);
+  const activeStay = useMemo(
+    () => stays[activeIndex] ?? stays[0],
+    [stays, activeIndex],
+  );
 
-  // Current image inside room
-  const [activeImage, setActiveImage] = useState(0);
+  const changeStay = (nextIndex: number) => {
+    if (stays.length <= 1 || isChanging) return;
 
-  // Incoming room during cinematic transition
-  const [incomingStay, setIncomingStay] = useState<number | null>(null);
+    const normalized = (nextIndex + stays.length) % stays.length;
+    if (normalized === activeIndex) return;
 
-  // Incoming image during image transition
-  const [incomingImage, setIncomingImage] = useState<number | null>(null);
+    setDirection(normalized > activeIndex ? 1 : -1);
+    setIsChanging(true);
+    setActiveIndex(normalized);
 
-  // Section reveal
-  const [visible, setVisible] = useState(false);
+    window.setTimeout(() => setIsChanging(false), 650);
+  };
 
-  // Prevent multiple clicks during transition
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const previous = () => changeStay(activeIndex - 1);
+  const next = () => changeStay(activeIndex + 1);
 
-  // ============================================================
-  // SECTION INTERSECTION OBSERVER
-  // ============================================================
-
+  // Reveal the section when it enters the viewport.
+  // This fixes the old .paciano-about-visible selector, which was never
+  // actually being added to the DOM.
   useEffect(() => {
-    const element = sectionRef.current;
-
-    if (!element) return;
+    const section = sectionRef.current;
+    if (!section) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsSectionVisible(true);
+          observer.disconnect();
+        }
       },
       {
-        threshold: 0.14,
+        threshold: 0.16,
+        rootMargin: "0px 0px -8% 0px",
       },
     );
 
-    observer.observe(element);
+    observer.observe(section);
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
-  // ============================================================
-  // CHANGE ROOM — CINEMATIC TRANSITION
-  // ============================================================
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") previous();
+      if (event.key === "ArrowRight") next();
+    };
 
-  const changeStay = (nextIndex: number) => {
-    if (nextIndex === activeStay || isTransitioning) {
-      return;
-    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
 
-    setIsTransitioning(true);
-
-    // Put new scene behind the current scene
-    setIncomingStay(nextIndex);
-
-    /*
-      Animation sequence:
-
-      0ms
-      Current image visible
-      New image enlarged + invisible
-
-      ~80ms
-      New image starts appearing
-
-      850ms
-      New image becomes the official scene
-    */
-
-    window.setTimeout(() => {
-      setActiveStay(nextIndex);
-
-      setActiveImage(0);
-
-      setIncomingStay(null);
-
-      setIsTransitioning(false);
-    }, 900);
-  };
-
-  // ============================================================
-  // CHANGE IMAGE INSIDE SAME ROOM
-  // ============================================================
-
-  const changeImage = (nextIndex: number) => {
-    if (nextIndex === activeImage || isTransitioning) {
-      return;
-    }
-
-    setIsTransitioning(true);
-
-    setIncomingImage(nextIndex);
-
-    window.setTimeout(() => {
-      setActiveImage(nextIndex);
-
-      setIncomingImage(null);
-
-      setIsTransitioning(false);
-    }, 750);
-  };
-
-  // ============================================================
-  // NEXT / PREVIOUS
-  // ============================================================
-
-  const nextStay = () => {
-    const next = (activeStay + 1) % stays.length;
-
-    changeStay(next);
-  };
-
-  const previousStay = () => {
-    const previous = (activeStay - 1 + stays.length) % stays.length;
-
-    changeStay(previous);
-  };
-
-  const stay = stays[activeStay];
-
-  const incoming = incomingStay !== null ? stays[incomingStay] : null;
-
-  // ============================================================
-  // RENDER
-  // ============================================================
+  if (!activeStay) return null;
 
   return (
     <section
       ref={sectionRef}
-      id="stays"
-      className="
-        relative
-        overflow-hidden
-        bg-[#F4EDE1]
-        text-[#203127]
-      "
+      id="stay"
+      className={`relative overflow-hidden bg-[#f2eee3] px-5 py-24 sm:px-8 lg:px-14 xl:px-20 ${
+        isSectionVisible ? "paciano-about-visible" : ""
+      }`}
     >
-      {/* ========================================================
-          TOP CURVED TRANSITION FROM EXPERIENCES
-      ======================================================== */}
-
-      <div
-        className="
-          absolute
-          top-[-35px]
-          left-1/2
-          -translate-x-1/2
-          w-[125%]
-          h-[100px]
-          rounded-[0_0_50%_50%]
-          bg-[#F4EDE1]
-          z-20
-          pointer-events-none
-        "
-      />
-
-      {/* ========================================================
-          CENTER BOTANICAL MARK
-      ======================================================== */}
-
-      <div
-        className="
-          absolute
-          top-[58px]
-          left-1/2
-          -translate-x-1/2
-          z-30
-          text-[#75825F]
-        "
-      ></div>
-
-      {/* ========================================================
-          MAIN CONTENT
-      ======================================================== */}
-
-      <div
-        className="
-            relative
-            z-10
-            max-w-[1480px]
-            mx-auto
-            px-5
-            sm:px-8
-            lg:px-12
-            pt-[50px]
-            sm:pt-[58px]
-            lg:pt-[64px]
-            pb-[65px]
-        "
+      {/* Organic botanical background */}
+      <svg
+        className="pointer-events-none absolute -right-20 top-8 h-[360px] w-[300px] opacity-[0.16]"
+        viewBox="0 0 300 360"
+        fill="none"
+        aria-hidden="true"
       >
-        {/* ======================================================
-    STAYS INTRO
-====================================================== */}
+        <path
+          d="M258 12C229 86 220 155 237 214C248 253 264 300 277 348"
+          stroke="#74844a"
+          strokeWidth="1"
+        />
+        <path d="M231 91C196 67 171 72 153 103C187 113 213 108 231 91Z" fill="#8b9865" />
+        <path d="M226 145C260 116 284 121 297 150C271 165 247 164 226 145Z" fill="#8b9865" />
+        <path d="M231 204C195 181 170 187 153 216C185 229 214 222 231 204Z" fill="#8b9865" />
+      </svg>
 
-        <div
-          className={`
-    relative
-    z-20
-    flex
-    flex-col
-    items-center
-    justify-center
-    text-center
-    transition-all
-    duration-[1200ms]
-    ease-[cubic-bezier(0.16,1,0.3,1)]
-    ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}
-  `}
-        >
-          {/* Botanical mark */}
+ 
+      {/* Intro */}
+      <div className="relative z-10 mx-auto max-w-[1180px] text-center">
+        <div className="paciano-intro-reveal">
 
-          <div
-            className="
-      mb-3
-      text-[#71883F]
-    "
+        {/* Small botanical sprout above OUR STAYS */}
+        <div className="mb-3 flex justify-center">
+          {/* <svg
+            width="34"
+            height="30"
+            viewBox="0 0 34 30"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            className="overflow-visible"
           >
-            <svg width="25" height="25" viewBox="0 0 40 40" fill="none">
-              <path
-                d="M20 34C20 25 21 17 27 8"
-                stroke="currentColor"
-                strokeWidth="1"
-              />
-
-              <path
-                d="
-          M21 22
-          C15 20 12 16 13 11
-          C18 12 22 16 22 21
-        "
-                fill="currentColor"
-              />
-
-              <path
-                d="
-          M24 17
-          C25 12 29 9 34 10
-          C32 15 29 18 24 18
-        "
-                fill="currentColor"
-                opacity=".5"
-              />
-            </svg>
-          </div>
-
-          {/* OUR STAYS */}
-
-          <div
-            className="
-      flex
-      items-center
-      justify-center
-      gap-4
-    "
-          >
-            <span
-              className="
-        w-10
-        h-px
-        bg-[#899475]/45
-      "
+            {/* stem
+            <path
+              d="M17 29C17 22 17 16 18.5 9"
+              stroke="#71803F"
+              strokeWidth="1"
+              strokeLinecap="round"
             />
 
-            <span
-              className="
-        font-manrope
-        text-[10px]
-        font-semibold
-        uppercase
-        tracking-[0.38em]
-        text-[#71803F]
-      "
-            >
-              Our Stays
-            </span>
-
-            <span
-              className="
-        w-10
-        h-px
-        bg-[#899475]/45
-      "
+            {/* left leaf 
+            <path
+              d="M17.8 13.2
+                C11.4 13.2 7.3 9.9 6.2 4.1
+                C12.4 4.2 17.2 7.1 17.8 13.2Z"
+              fill="#71803F"
             />
-          </div>
 
-          {/* MAIN HEADING */}
-
-          <h2
+            {/* right leaf 
+            <path
+              d="M18.2 9.8
+                C20.1 4.2 24.2 1.8 29.3 2.5
+                C28.2 7.8 24.5 10.5 18.2 9.8Z"
+              fill="#71803F"
+            />
+          </svg> */}
+          <svg
+            viewBox="0 0 40 40"
             className="
-      mt-[16px]
-      max-w-[950px]
-      font-cormorant
-      text-[43px]
-      leading-[.95]
-      tracking-[-.025em]
-      text-[#17251B]
-      sm:text-[52px]
-      lg:text-[60px]
-    "
-          >
-            Where Every Stay,
-            <br />
-            <span className="italic text-[#789541]">
-              Feels Like Home in Nature.
-            </span>
-          </h2>
+          mx-auto
+          mb-[9px]
 
-          {/* DESCRIPTION */}
+          h-[25px]
+          w-[25px]
 
-          <p
-            className="
-      mt-5
-      max-w-[700px]
-      px-4
-      font-manrope
-      text-[12px]
-      leading-[1.8]
-      text-[#657067]
-      sm:text-[13px]
-      lg:text-[14px]
-    "
+          text-[#71883F]
+        "
+            fill="none"
           >
-            Wake to misty mountains, unwind beside the river, and let nature set
-            the pace. Our stays are crafted for quiet comfort, generous space
-            and a deeper sense of belonging.
-          </p>
+            <path
+              d="M20 34C20 25 21 17 27 8"
+              stroke="currentColor"
+              strokeWidth="1"
+            />
+
+            <path
+              d="
+            M21 22
+            C15 20 12 16 13 11
+            C18 12 22 16 22 21
+          "
+              fill="currentColor"
+            />
+
+            <path
+              d="
+            M24 17
+            C25 12 29 9 34 10
+            C32 15 29 18 24 18
+          "
+              fill="currentColor"
+              opacity=".5"
+            />
+          </svg>
         </div>
 
-        {/* ======================================================
-    LUXURY ROOM NAVIGATION
-====================================================== */}
+        {/* OUR STAYS */}
+        <div className="flex items-center justify-center gap-4">
+          {/* <span className="h-px w-10 bg-[#7d8958]/55" /> */}
 
-        <div
-          className={`
-    relative
-    mt-9
-    sm:mt-11
-    lg:mt-12
-    w-full
-
-    transition-all
-    duration-[1400ms]
-    ease-[cubic-bezier(0.16,1,0.3,1)]
-
-    ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-  `}
-        >
-          <div
-            className="
-      mx-auto
-      flex
-      w-full
-      max-w-[1180px]
-      flex-col
-      items-center
-      justify-center
-      gap-7
-
-      lg:flex-row
-      lg:gap-0
-    "
-          >
-            {/* ====================================================
-        ROOM COLLECTION
-    ==================================================== */}
-
-            <div
-              className="
-    flex
-    w-full
-    items-end
-    justify-center
-
-    gap-3
-    sm:gap-8
-
-    lg:w-auto
-    lg:gap-8
-  "
-            >
-              {stays.map((item, index) => {
-                const active = index === activeStay;
-
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => changeStay(index)}
-                    disabled={isTransitioning}
-                    aria-label={`View ${item.name}`}
-                    className="
-          group
-          relative
-
-          flex
-          min-w-0
-          flex-1
-          flex-col
-          items-center
-
-          px-2
-          sm:px-4
-          lg:min-w-[170px]
-
-          text-center
-
-          disabled:pointer-events-none
-        "
-                  >
-                    {/* =====================================================
-            BESPOKE PACIANO ICON
-        ===================================================== */}
-
-                    <span
-                      className={`
-            relative
-            mb-4
-
-            flex
-            h-[42px]
-            w-[54px]
-            items-center
-            justify-center
-
-            ${
-              active
-                ? "text-[#667A42]"
-                : "text-[#9A9F91] group-hover:text-[#667A42]"
-            }
-
-            transition-colors
-            duration-[900ms]
-            ease-out
-          `}
-                    >
-                      {/* ================= RIVER ================= */}
-
-                      {index === 0 && (
-                        <svg
-                          viewBox="0 0 54 42"
-                          className="h-[38px] w-[50px]"
-                          fill="none"
-                        >
-                          <path
-                            d="M5 15
-                   C11 9 17 9 23 15
-                   C29 21 36 21 49 13"
-                            stroke="currentColor"
-                            strokeWidth="1"
-                            className="
-                  animate-[riverWave_5s_ease-in-out_infinite]
-                "
-                          />
-
-                          <path
-                            d="M5 21
-                   C12 15 18 15 24 21
-                   C30 27 38 27 49 19"
-                            stroke="currentColor"
-                            strokeWidth=".8"
-                            opacity=".65"
-                            className="
-                  animate-[riverWave_6s_ease-in-out_infinite_reverse]
-                "
-                          />
-
-                          <path
-                            d="M11 28
-                   C17 24 22 24 28 28
-                   C34 32 39 32 44 29"
-                            stroke="currentColor"
-                            strokeWidth=".7"
-                            opacity=".38"
-                            className="
-                  animate-[riverWave_7s_ease-in-out_infinite]
-                "
-                          />
-
-                          <circle
-                            cx="8"
-                            cy="9"
-                            r="1.4"
-                            fill="currentColor"
-                            opacity=".65"
-                            className="
-                  animate-[riverDrop_4s_ease-in-out_infinite]
-                "
-                          />
-                        </svg>
-                      )}
-
-                      {/* ================= GARDEN ================= */}
-
-                      {index === 1 && (
-                        <svg
-                          viewBox="0 0 54 42"
-                          className="h-[40px] w-[48px]"
-                          fill="none"
-                        >
-                          <path
-                            d="M27 36
-                   C27 27 27 18 31 7"
-                            stroke="currentColor"
-                            strokeWidth="1"
-                            className="
-                  origin-bottom
-                  animate-[stemSway_6s_ease-in-out_infinite]
-                "
-                          />
-
-                          <path
-                            d="
-                  M28 23
-                  C20 22 15 17 15 11
-                  C22 11 28 15 28 23Z
-                "
-                            stroke="currentColor"
-                            strokeWidth="1"
-                            className="
-                  origin-bottom-right
-                  animate-[leafBreath_5s_ease-in-out_infinite]
-                "
-                          />
-
-                          <path
-                            d="
-                  M30 16
-                  C31 10 36 6 42 7
-                  C40 13 36 17 30 16Z
-                "
-                            stroke="currentColor"
-                            strokeWidth="1"
-                            opacity=".75"
-                            className="
-                  origin-bottom-left
-                  animate-[leafBreath_6s_ease-in-out_infinite_reverse]
-                "
-                          />
-
-                          <path
-                            d="M18 31C23 28 31 28 37 31"
-                            stroke="currentColor"
-                            strokeWidth=".7"
-                            opacity=".3"
-                          />
-                        </svg>
-                      )}
-
-                      {/* ================= VALLEY ================= */}
-
-                      {index === 2 && (
-                        <svg
-                          viewBox="0 0 54 42"
-                          className="h-[37px] w-[54px]"
-                          fill="none"
-                        >
-                          <path
-                            d="
-                  M5 33
-                  L17 19
-                  L23 26
-                  L34 10
-                  L49 33
-                "
-                            stroke="currentColor"
-                            strokeWidth="1"
-                            className="
-                  animate-[mountainReveal_7s_ease-in-out_infinite]
-                "
-                          />
-
-                          <path
-                            d="M25 33L34 22L42 33"
-                            stroke="currentColor"
-                            strokeWidth=".7"
-                            opacity=".38"
-                          />
-
-                          <path
-                            d="M4 34H50"
-                            stroke="currentColor"
-                            strokeWidth=".8"
-                            opacity=".5"
-                          />
-
-                          <path
-                            d="
-                  M31 13
-                  L34 10
-                  L37 14
-                "
-                            stroke="currentColor"
-                            strokeWidth=".7"
-                            opacity=".5"
-                            className="
-                  animate-[mountainPeak_5s_ease-in-out_infinite]
-                "
-                          />
-                        </svg>
-                      )}
-
-                      {/* ================= FAMILY ================= */}
-
-                      {index === 3 && (
-                        <svg
-                          viewBox="0 0 54 42"
-                          className="h-[38px] w-[54px]"
-                          fill="none"
-                        >
-                          <circle
-                            cx="19"
-                            cy="12"
-                            r="3"
-                            stroke="currentColor"
-                            strokeWidth="1"
-                            className="
-                  animate-[personBreath_5s_ease-in-out_infinite]
-                "
-                          />
-
-                          <circle
-                            cx="35"
-                            cy="12"
-                            r="3"
-                            stroke="currentColor"
-                            strokeWidth="1"
-                            className="
-                  animate-[personBreath_5s_ease-in-out_infinite_reverse]
-                "
-                          />
-
-                          <path
-                            d="
-                  M10 32
-                  C10 24 14 20 19 20
-                  C24 20 27 24 27 32
-                "
-                            stroke="currentColor"
-                            strokeWidth="1"
-                          />
-
-                          <path
-                            d="
-                  M27 32
-                  C27 24 30 20 35 20
-                  C40 20 44 24 44 32
-                "
-                            stroke="currentColor"
-                            strokeWidth="1"
-                          />
-
-                          <path
-                            d="M6 34H48"
-                            stroke="currentColor"
-                            strokeWidth=".6"
-                            opacity=".25"
-                          />
-                        </svg>
-                      )}
-                    </span>
-
-                    {/* =====================================================
-            ROOM NAME
-        ===================================================== */}
-
-                    <span
-                      className={`
-            relative
-
-            font-cormorant
-            text-[19px]
-            sm:text-[20px]
-            lg:text-[21px]
-
-            leading-none
-            tracking-[0.005em]
-            whitespace-nowrap
-
-            transition-all
-            duration-[1000ms]
-            ease-[cubic-bezier(0.16,1,0.3,1)]
-
-            ${
-              active
-                ? "text-[#263B2C]"
-                : "text-[#747B70] group-hover:text-[#40533D]"
-            }
-          `}
-                    >
-                      {item.name}
-                    </span>
-
-                    {/* =====================================================
-            ACTIVE EDITORIAL MARK
-        ===================================================== */}
-
-                    <span
-                      className={`
-            absolute
-            -bottom-[13px]
-
-            left-1/2
-            -translate-x-1/2
-
-            h-px
-
-            bg-[#71883F]
-
-            transition-all
-            duration-[1000ms]
-            ease-[cubic-bezier(0.16,1,0.3,1)]
-
-            ${
-              active
-                ? "w-[82px] opacity-100"
-                : "w-0 opacity-0 group-hover:w-[38px] group-hover:opacity-50"
-            }
-          `}
-                    />
-
-                    {/* tiny active point */}
-
-                    <span
-                      className={`
-            absolute
-            -bottom-[15px]
-            left-1/2
-            -translate-x-1/2
-
-            h-[3px]
-            w-[3px]
-
-            bg-[#71883F]
-
-            ${
-              active
-                ? "opacity-100 animate-[activePoint_4s_ease-in-out_infinite]"
-                : "opacity-0"
-            }
-          `}
-                    />
-                  </button>
-                );
-              })}
-            </div>
-            {/* ====================================================
-        VERTICAL DIVIDER
-    ==================================================== */}
-
-            <span
-              className="
-        hidden
-        h-[58px]
-        w-px
-        bg-[#AEB3A3]/50
-
-        lg:mx-7
-        lg:block
-      "
-            />
-
-            {/* ====================================================
-        EXPLORE ALL STAYS
-    ==================================================== */}
-
-            {/* <button
-              type="button"
-              className="
-        group
-        relative
-
-        flex
-        items-center
-        gap-5
-
-        py-2
-        pl-3
-        pr-1
-
-        text-left
-
-        transition-all
-        duration-[900ms]
-        ease-[cubic-bezier(0.16,1,0.3,1)]
-
-        hover:translate-x-1
-      "
-            >
-         
-
-              <span className="flex flex-col">
-                <span
-                  className="
-            font-manrope
-            text-[9px]
-            font-medium
-            uppercase
-            tracking-[0.42em]
-            text-[#7B8478]
-
-            transition-all
-            duration-500
-
-            group-hover:text-[#718247]
-          "
-                >
-                  Explore the
-                </span>
-
-                <span
-                  className="
-            mt-[5px]
-
-            font-cormorant
-            text-[25px]
-            leading-none
-            tracking-[-0.01em]
-            text-[#26382D]
-
-            transition-all
-            duration-700
-
-            group-hover:tracking-[0.01em]
-          "
-                >
-                  Collection
-                </span>
-
-                
-
-                <span
-                  className="
-            mt-[9px]
-            h-px
-            w-[48px]
-
-            origin-left
-            bg-[#718247]/50
-
-            transition-all
-            duration-[900ms]
-            ease-[cubic-bezier(0.16,1,0.3,1)]
-
-            group-hover:w-[82px]
-            group-hover:bg-[#718247]
-          "
-                />
-              </span>
-
-            
-              <span
-                className="
-          relative
-          flex
-          h-[62px]
-          w-[62px]
-          shrink-0
-          items-center
-          justify-center
-
-          rounded-full
-
-          border
-          border-[#687957]/55
-
-          text-[#304237]
-
-          transition-all
-          duration-[900ms]
-          ease-[cubic-bezier(0.16,1,0.3,1)]
-
-          group-hover:scale-[1.08]
-          group-hover:border-[#526A3D]
-          group-hover:bg-[#26382D]
-          group-hover:text-[#F4EDE1]
-
-          animate-[exploreBreath_5s_ease-in-out_infinite]
-        "
-              >
-               
-
-                <span
-                  className="
-            absolute
-            inset-[-6px]
-
-            rounded-full
-
-            border
-            border-dashed
-            border-[#718247]/25
-
-            transition-transform
-            duration-[1400ms]
-            ease-linear
-
-            group-hover:rotate-180
-          "
-                />
-
-             
-
-                <span
-                  className="
-            absolute
-            inset-[7px]
-
-            rounded-full
-
-            border
-            border-[#718247]/25
-
-            transition-all
-            duration-700
-
-            group-hover:inset-[10px]
-            group-hover:border-[#A6B77D]/60
-          "
-                />
-
-                <span
-                  className="
-            relative
-            z-10
-
-            text-[21px]
-            leading-none
-
-            transition-transform
-            duration-700
-            ease-[cubic-bezier(0.16,1,0.3,1)]
-
-            group-hover:translate-x-1
-          "
-                >
-                  →
-                </span>
-              </span>
-            </button> */}
-
-            {/* ==================================================
-    EXPLORE THE COLLECTION
-    PACIANO EDITORIAL CTA
-================================================== */}
-
-            {/* =====================================================
-    EXPLORE COLLECTION — EDITORIAL LINK
-===================================================== */}
-
-            <button
-              type="button"
-              className="
-    group
-
-    relative
-
-    flex
-    min-w-[215px]
-
-    items-center
-
-    py-3
-    pl-1
-    pr-0
-
-    text-left
-  "
-            >
-              {/* TEXT */}
-
-              <span
-                className="
-      relative
-      z-10
-
-      flex
-      flex-col
-    "
-              >
-                <span
-                  className="
-        font-manrope
-        text-[8px]
-        font-medium
-        uppercase
-        tracking-[0.38em]
-
-        text-[#6F7D63]
-
-        transition-colors
-        duration-700
-
-        group-hover:text-[#71883F]
-      "
-                >
-                  Explore the
-                </span>
-
-                <span
-                  className="
-        mt-[3px]
-
-        font-cormorant
-        text-[29px]
-        leading-none
-        tracking-[-0.015em]
-
-        text-[#263B2C]
-
-        transition-all
-        duration-[900ms]
-        ease-[cubic-bezier(0.16,1,0.3,1)]
-
-        group-hover:translate-x-[3px]
-      "
-                >
-                  Collection
-                </span>
-              </span>
-
-              {/* =====================================================
-      LINE + ARROW
-  ===================================================== */}
-
-              <span
-                className="
-      relative
-
-      ml-7
-
-      flex
-      flex-1
-      items-center
-
-      self-end
-      mb-[4px]
-    "
-              >
-                {/* base line */}
-
-                <span
-                  className="
-        h-px
-        w-full
-
-        bg-[#71883F]/35
-
-        transition-all
-        duration-[900ms]
-        ease-[cubic-bezier(0.16,1,0.3,1)]
-
-        group-hover:bg-[#71883F]
-      "
-                />
-
-                {/* moving green line */}
-
-                <span
-                  className="
-        absolute
-        left-0
-
-        h-[1px]
-        w-[34px]
-
-        bg-[#71883F]
-
-        animate-[collectionLineTravel_5s_ease-in-out_infinite]
-      "
-                />
-
-                {/* arrow */}
-
-                <span
-                  className="
-        relative
-
-        ml-3
-
-        flex
-        h-[18px]
-        w-[18px]
-
-        items-center
-        justify-center
-
-        font-manrope
-        text-[16px]
-        font-light
-
-        text-[#334A38]
-
-        transition-all
-        duration-[700ms]
-
-        group-hover:translate-x-[4px]
-        group-hover:text-[#71883F]
-      "
-                >
-                  →
-                </span>
-              </span>
-            </button>
-          </div>
-        </div>
-        {/* ======================================================
-            CINEMATIC ROOM IMAGE
-        ====================================================== */}
-
-        <div
-          className={`
-            relative
-            mt-8
-            transition-all
-            duration-[1500ms]
-            ease-[cubic-bezier(0.16,1,0.3,1)]
-            ${
-              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"
-            }
-          `}
-        >
-          {/* ====================================================
-              IMAGE FRAME
-          ==================================================== */}
-
-          <div
-            className="
-              relative
-              overflow-hidden
-              h-[470px]
-                sm:h-[560px]
-                lg:h-[680px]
-                xl:h-[700px]
-              rounded-[20px]
-              sm:rounded-[26px]
-              bg-[#303A32]
-              shadow-[0_35px_100px_rgba(43,49,42,0.18)]
-            "
-          >
-            {/* ==================================================
-                CURRENT ROOM IMAGE
-            ================================================== */}
-
-            <div
-              className={`
-                absolute
-                inset-0
-                transition-all
-                duration-[900ms]
-                ease-[cubic-bezier(0.22,1,0.36,1)]
-                ${
-                  incomingStay !== null
-                    ? "opacity-0 scale-[0.965]"
-                    : "opacity-100 scale-100"
-                }
-              `}
-            >
-              <img
-                src={stay.images[activeImage]}
-                alt={stay.name}
-                className="
-                    absolute
-                    inset-0
-                    w-full
-                    h-full
-                    object-cover
-                    object-center
-                    animate-[luxuryRoomDrift_18s_ease-in-out_infinite_alternate]
-                    "
-              />
-            </div>
-
-            {/* ==================================================
-                INCOMING ROOM IMAGE
-            ================================================== */}
-
-            {incoming && (
-              <div
-                className="
-                  absolute
-                  inset-0
-                  opacity-100
-                  scale-100
-                  animate-[roomEnter_1200ms_cubic-bezier(0.16,1,0.3,1)]
-                "
-              >
-                <img
-                  src={incoming.images[0]}
-                  alt={incoming.name}
-                  className="
-                    absolute
-                    inset-0
-                    w-full
-                    h-full
-                    object-cover
-                    object-center
-                  "
-                />
-              </div>
-            )}
-
-            {/* ==================================================
-                SAME ROOM IMAGE TRANSITION
-            ================================================== */}
-
-            {incomingImage !== null && (
-              <div
-                className="
-                  absolute
-                  inset-0
-                  animate-[imageEnter_750ms_cubic-bezier(0.22,1,0.36,1)]
-                "
-              >
-                <img
-                  src={stay.images[incomingImage]}
-                  alt=""
-                  className="
-                    absolute
-                    inset-0
-                    w-full
-                    h-full
-                    object-cover
-                    object-center
-                  "
-                />
-              </div>
-            )}
-
-            {/* ==================================================
-                CINEMATIC DARK GRADIENT
-            ================================================== */}
-
-            <div
-              className="
-                absolute
-                inset-0
-                bg-gradient-to-t
-                from-black/70
-                via-black/15
-                to-transparent
-                pointer-events-none
-              "
-            />
-
-            <div
-              className="
-                absolute
-                inset-0
-                bg-gradient-to-r
-                from-black/35
-                via-transparent
-                to-transparent
-                pointer-events-none
-              "
-            />
-
-            {/* ==================================================
-                SOFT LIGHT
-            ================================================== */}
-
-            <div
-              className="
-                absolute
-                inset-0
-                pointer-events-none
-                bg-[radial-gradient(circle_at_62%_25%,rgba(255,244,214,0.16),transparent_38%)]
-              "
-            />
-
-            {/* ==================================================
-                ROOM INFORMATION
-            ================================================== */}
-
-            <div
-              key={`${activeStay}-${activeImage}`}
-              className="
-                absolute
-                left-7
-                sm:left-10
-                lg:left-14
-                bottom-9
-                sm:bottom-11
-                lg:bottom-14
-                max-w-[560px]
-                text-white
-                animate-[contentEnter_850ms_ease-out]
-              "
-            >
-              <p
-                className="
-                  text-[9px]
-                  sm:text-[10px]
-                  tracking-[0.4em]
-                  uppercase
-                  text-white/80
-                "
-              >
-                {stay.eyebrow}
-              </p>
-
-              <h3
-                className="
-                  mt-2
-                  font-serif
-                  text-[35px]
-                  sm:text-[44px]
-                  lg:text-[52px]
-                  leading-[0.98]
-                  tracking-[-0.035em]
-                "
-              >
-                {stay.title}
-              </h3>
-
-              <p
-                className="
-                  mt-4
-                  max-w-[490px]
-                  text-[13px]
-                    sm:text-[14px]
-                    lg:text-[15px]
-                  leading-[1.75]
-                  text-white/85
-                "
-              >
-                {stay.description}
-              </p>
-
-              <button
-                className="
-                  group
-                  mt-6
-                  inline-flex
-                  items-center
-                  gap-4
-                  rounded-full
-                  border
-                  border-white/70
-                  px-5
-                  py-2.5
-                  text-[9px]
-                  uppercase
-                  tracking-[0.25em]
-                  text-white
-                  transition-all
-                  duration-500
-                  hover:bg-white
-                  hover:text-[#24382D]
-                "
-              >
-                Explore This Room
-                <span
-                  className="
-                    flex
-                    items-center
-                    justify-center
-                    w-6
-                    h-6
-                    rounded-full
-                    border
-                    border-white/50
-                    transition-all
-                    duration-500
-                    group-hover:border-[#24382D]/40
-                  "
-                >
-                  →
-                </span>
-              </button>
-            </div>
-
-            {/* ==================================================
-                IMAGE COUNTER
-            ================================================== */}
-
-            <div
-              className="
-                absolute
-                right-7
-                sm:right-10
-                bottom-9
-                sm:bottom-11
-                flex
-                items-center
-                gap-3
-                text-white/80
-              "
-            >
-              <span
-                className="
-                  text-[10px]
-                  tracking-[0.3em]
-                "
-              >
-                {String(activeImage + 1).padStart(2, "0")}
-              </span>
-
-              <span
-                className="
-                  w-10
-                  h-px
-                  bg-white/40
-                "
-              />
-
-              <span
-                className="
-                  text-[10px]
-                  tracking-[0.3em]
-                "
-              >
-                {String(stay.images.length).padStart(2, "0")}
-              </span>
-            </div>
-          </div>
-
-          {/* ====================================================
-              PREVIOUS BUTTON
-          ==================================================== */}
-
-          <button
-            onClick={previousStay}
-            disabled={isTransitioning}
-            aria-label="Previous stay"
-            className="
-              absolute
-              left-0
-              top-1/2
-              -translate-x-1/2
-              -translate-y-1/2
-              hidden
-              lg:flex
-              items-center
-              justify-center
-              w-12
-              h-12
-              rounded-full
-              bg-[#F4EDE1]
-              border
-              border-[#9EA58F]/50
-              text-[#34443A]
-              shadow-[0_8px_25px_rgba(30,40,32,0.10)]
-              transition-all
-              duration-500
-              hover:bg-[#24382D]
-              hover:text-white
-              hover:scale-110
-              disabled:opacity-40
-            "
-          >
-            ←
-          </button>
-
-          {/* ====================================================
-              NEXT BUTTON
-          ==================================================== */}
-
-          <button
-            onClick={nextStay}
-            disabled={isTransitioning}
-            aria-label="Next stay"
-            className="
-              absolute
-              right-0
-              top-1/2
-              translate-x-1/2
-              -translate-y-1/2
-              hidden
-              lg:flex
-              items-center
-              justify-center
-              w-12
-              h-12
-              rounded-full
-              bg-[#F4EDE1]
-              border
-              border-[#9EA58F]/50
-              text-[#34443A]
-              shadow-[0_8px_25px_rgba(30,40,32,0.10)]
-              transition-all
-              duration-500
-              hover:bg-[#24382D]
-              hover:text-white
-              hover:scale-110
-              disabled:opacity-40
-            "
-          >
-            →
-          </button>
-        </div>
-
-        {/* ======================================================
-            AMENITIES
-        ====================================================== */}
-
-        <div
-          className={`
-            mt-7
-            pt-5
-            border-t
-            border-[#AEB3A3]/45
-            transition-all
-            duration-[1200ms]
-            delay-300
-            ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}
-          `}
-        >
-          <div
-            className="
-              flex
-              flex-wrap
-              justify-center
-              lg:justify-between
-              items-center
-            "
-          >
-            {stay.amenities.map((amenity, index) => (
-              <div
-                key={amenity.label}
-                className="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    sm:px-6
-                    py-2
-                    text-[#657066]
-                  "
-              >
-                <AmenityIcon type={amenity.icon} />
-
-                <span
-                  className="
-                      text-[10px]
-                      whitespace-nowrap
-                    "
-                >
-                  {amenity.label}
-                </span>
-
-                {index < stay.amenities.length - 1 && (
-                  <span
-                    className="
-                        hidden
-                        lg:block
-                        ml-4
-                        w-px
-                        h-5
-                        bg-[#B6BAAD]/50
-                      "
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ======================================================
-            CLOSING QUOTE
-        ====================================================== */}
-
-        <div
-          className={`
-            mt-12
-            text-center
-            transition-all
-            duration-[1500ms]
-            delay-500
-            ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}
-          `}
-        >
           <span
             className="
-              block
-              mx-auto
-              mb-4
-              w-8
-              h-px
-              bg-[#899475]/50
-            "
-          />
-
-          <p
-            className="
-              font-serif
-              italic
-              text-[18px]
-              sm:text-[21px]
-              leading-[1.45]
-              text-[#53614F]
+              font-manrope
+              text-[12px]
+              font-semibold
+              uppercase
+              tracking-[0.3em]
+              text-[#71803F]
             "
           >
-            “More than a stay,
-            <br />a deeper connection.”
-          </p>
+            Stays That Feel Like an Escape
+          </span>
+
+          {/* <span className="h-px w-10 bg-[#7d8958]/55" /> */}
+        </div>
+
+        <h2
+          className="
+            mt-5
+            font-cormorant
+            text-[48px]
+            font-normal
+            leading-[0.92]
+            tracking-[-0.025em]
+            text-[#173321]
+            sm:text-[60px]
+            lg:text-[68px]
+          "
+        >
+          Spaces Crafted for Your Escape,
+        </h2>
+
+        <p
+          className="
+            mt-1
+            font-cormorant
+            text-[38px]
+            font-normal
+            italic
+            leading-[0.95]
+            tracking-[-0.02em]
+            text-[#84934d]
+            sm:text-[48px]
+            lg:text-[52px]
+          "
+        >
+          Made to Be Yours. 
+        </p>
+
+        <p
+          className="
+          paciano-reveal
+          paciano-delay-2
+          mt-[32px]
+          mx-auto
+          max-w-[680px]
+          font-manrope
+          text-[12px]
+          leading-[1.85]
+          text-[#50584F]
+          sm:text-[14px]
+          "
+        >
+          Thoughtfully designed stays that blend comfort, nature and understated luxury.<br/>
+          Find the perfect space for your next escape.
+        </p>
+
         </div>
       </div>
 
-      {/* ========================================================
-    CINEMATIC MIST / MOUNTAIN TRANSITION
-======================================================== */}
+      {/* Stay category navigation */}
+      <div className="relative z-20 mx-auto mt-12 flex max-w-[1180px] items-end justify-center">
+        <div className="grid w-full grid-cols-2 border-b border-[#173321]/10 sm:grid-cols-4 lg:w-auto lg:border-b-0">
+          {stays.map((stay, index) => {
+            const active = index === activeIndex;
 
-      <div
-        className="
-    relative
-    mt-[-10px]
-    h-[260px]
-    overflow-hidden
-    pointer-events-none
-  "
-      >
-        {/* TOP FADE */}
+            return (
+              <button
+                key={stay.id}
+                type="button"
+                onClick={() => changeStay(index)}
+                className={`group relative min-w-[150px] px-5 pb-4 pt-3 text-center outline-none sm:px-7 lg:min-w-[190px] ${
+                  active ? "paciano-stay-active" : ""
+                }`}
+              >
+                <span
+                  className={`paciano-stay-icon paciano-stay-icon-${index} mx-auto mb-3 flex h-9 items-center justify-center text-[#78865b] transition-all duration-700 ${
+                    active
+                      ? "scale-105 opacity-100"
+                      : "opacity-55 group-hover:opacity-100"
+                  }`}
+                >
+                  {index === 0 && (
+                    <svg width="35" height="27" viewBox="0 0 35 27" fill="none" aria-hidden="true">
+                      <path className="paciano-wave-line paciano-wave-1" d="M3 9C8 5 12 5 17 9C22 13 27 13 32 9" stroke="currentColor" strokeWidth="1.2" />
+                      <path className="paciano-wave-line paciano-wave-2" d="M3 15C8 11 12 11 17 15C22 19 27 19 32 15" stroke="currentColor" strokeWidth="1.2" />
+                      <path className="paciano-wave-line paciano-wave-3" d="M3 21C8 17 12 17 17 21C22 25 27 25 32 21" stroke="currentColor" strokeWidth="1.2" />
+                    </svg>
+                  )}
+                  {index === 1 && (
+                    <svg width="28" height="30" viewBox="0 0 28 30" fill="none" aria-hidden="true">
+                      <g className="paciano-leaf-icon" style={{ transformOrigin: "14px 18px" }}>
+                        <path d="M14 28V8M14 14C8 13 5 10 4 5C9 5 13 8 14 14ZM14 18C20 17 23 14 24 9C19 9 15 12 14 18Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </g>
+                    </svg>
+                  )}
+                  {index === 2 && (
+                    <svg width="34" height="28" viewBox="0 0 34 28" fill="none" aria-hidden="true">
+                      <path className="paciano-mountain-icon" d="M3 24L13 11L19 18L25 7L31 24H3Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                  {index === 3 && (
+                    <svg width="36" height="29" viewBox="0 0 36 29" fill="none" aria-hidden="true">
+                      <g className="paciano-family-icon" style={{ transformOrigin: "18px 15px" }}>
+                        <circle cx="10" cy="8" r="3" stroke="currentColor" strokeWidth="1.1" />
+                        <circle cx="26" cy="8" r="3" stroke="currentColor" strokeWidth="1.1" />
+                        <circle cx="18" cy="4" r="3" stroke="currentColor" strokeWidth="1.1" />
+                        <path d="M3 25C3 19 6 16 10 16C14 16 17 19 17 25M19 25C19 19 22 16 26 16C30 16 33 19 33 25" stroke="currentColor" strokeWidth="1.1" />
+                      </g>
+                    </svg>
+                  )}
+                </span>
 
-        <div
-          className="
-      absolute
-      inset-x-0
-      top-0
-      h-[110px]
-      z-20
-      bg-gradient-to-b
-      from-[#F4EDE1]
-      via-[#F4EDE1]/80
-      to-transparent
-    "
-        />
+                <span
+                  className={`block font-cormorant text-[18px] leading-none transition-all duration-500 text-[#173321]${
+                    active
+                      ? "translate-y-[-1px] text-[#173321]"
+                      : "text-[#687064] group-hover:translate-y-[-1px] group-hover:text-[#173321]"
+                  }`}
+                >
+                  {stay.category}
+                </span>
 
-        {/* MOUNTAIN IMAGE */}
+                <span
+                  className={`absolute bottom-0 left-1/2 h-px -translate-x-1/2 bg-[#84934d] transition-all duration-700 ${
+                    active ? "w-[118px] opacity-100" : "w-0 opacity-0"
+                  }`}
+                />
 
-        <div
-          className={`
-      absolute
-      inset-x-[-5%]
-      bottom-[-20px]
-      h-[230px]
-      transition-all
-      duration-[2200ms]
-      ease-out
-      ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-    `}
-        >
-          <img
-            src={mistMountains}
-            alt=""
-            className="
-        absolute
-        inset-0
-        w-full
-        h-full
-        object-cover
-        object-center
-        opacity-45
-        animate-[mistDrift_22s_ease-in-out_infinite_alternate]
-      "
-          />
-
-          {/* FADE INTO BACKGROUND */}
-
-          <div
-            className="
-        absolute
-        inset-0
-        bg-gradient-to-b
-        from-transparent
-        via-[#F4EDE1]/35
-        to-[#F4EDE1]
-      "
-          />
-
-          {/* SIDE FADE */}
-
-          <div
-            className="
-        absolute
-        inset-0
-        bg-gradient-to-r
-        from-[#F4EDE1]
-        via-transparent
-        to-[#F4EDE1]
-      "
-          />
+                {index < stays.length - 1 && (
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-0 top-1/2 hidden h-[62px] w-px -translate-y-1/2 bg-[#173321]/14 lg:block"
+                  />
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* PACIANO SIGNATURE */}
-
-        <div
-          className="
-      absolute
-      left-1/2
-      bottom-10
-      -translate-x-1/2
-      z-30
-      text-center
-      animate-[signatureFloat_7s_ease-in-out_infinite]
-    "
+        {/* Brand-led editorial CTA — intentionally not a pill/button */}
+        <button
+          type="button"
+          onClick={() => onStaySelect?.(activeStay)}
+          className="paciano-stay-cta group ml-7 hidden items-center gap-5 border-l border-[#173321]/15 pb-3 pl-7 lg:flex"
         >
-          <div
-            className="
-        mx-auto
-        mb-3
-        text-[#75825F]
-      "
-          >
-            <svg width="27" height="27" viewBox="0 0 24 24" fill="none">
-              <path d="M12 21V8" stroke="currentColor" strokeWidth="1" />
+          <span className="text-left">
+            <span className="block font-jost text-[10px] font-medium uppercase tracking-[0.28em] text-[#7b865a] transition-colors duration-500 group-hover:text-[#596a38]">
+              A Place to Belong
+            </span>
+            <span className="mt-1 block font-cormorant text-[22px] leading-none text-[#173321]">
+              Find Your Paciano
+            </span>
+          </span>
 
-              <path
-                d="M12 13C8 12 6 9 6 7C10 7 12 9 12 13Z"
-                stroke="currentColor"
-                strokeWidth="1"
-              />
+          <span className="relative flex h-12 w-12 items-center justify-center text-[#173321]">
+            <span className="absolute inset-0 rounded-full border border-[#7e8c59]/45 transition-all duration-700 group-hover:scale-[1.08] group-hover:border-[#71803f]" />
+            <span className="absolute inset-[5px] rounded-full border border-[#84934d]/25 transition-all duration-700 group-hover:rotate-45 group-hover:scale-[0.92]" />
+            <span className="relative text-[19px] font-light transition-transform duration-500 group-hover:translate-x-1">
+              →
+            </span>
+          </span>
+        </button>
+      </div>
 
-              <path
-                d="M12 10C13 6 16 4 19 4C19 8 16 10 12 10Z"
-                stroke="currentColor"
-                strokeWidth="1"
-              />
-            </svg>
+      {/* Main accommodation showcase */}
+      <div className="relative z-10 mx-auto mt-7 max-w-[1420px]">
+        <div className="relative overflow-hidden rounded-[28px] bg-[#173321] shadow-[0_30px_90px_rgba(31,43,30,0.16)]">
+          <div className="grid min-h-[590px] lg:grid-cols-[minmax(0,1fr)_390px]">
+            {/* Room image — intentionally the visual hero */}
+            <div className="relative min-h-[430px] overflow-hidden lg:min-h-[590px]">
+              <div
+                key={activeStay.id}
+                className={`absolute inset-0 transition-all duration-700 ease-[cubic-bezier(.22,1,.36,1)] ${
+                  isChanging
+                    ? direction > 0
+                      ? "translate-x-5 scale-[1.025] opacity-0"
+                      : "-translate-x-5 scale-[1.025] opacity-0"
+                    : "translate-x-0 scale-100 opacity-100"
+                }`}
+              >
+                <img
+                   src={activeStay.images[0]}
+                  alt={activeStay.name}
+                  className="h-full w-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+              </div>
+
+              <div className="absolute bottom-9 left-8 z-10 max-w-[220px] text-white sm:bottom-12 sm:left-12">
+                <div className="mb-5 h-px w-16 bg-[#c7d37c]" />
+                <p className="font-cormorant text-[28px] leading-[0.92] tracking-[0.01em]">
+                  A quieter
+                  <br />
+                  kind of
+                  <br />
+                  <span className="italic text-[#cbd779]">luxury.</span>
+                </p>
+                <p className="mt-5 max-w-[190px] font-lora text-[10px] italic leading-[1.55] text-white/80">
+                  Where the river slows, the mountains breathe, and time feels different.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={previous}
+                aria-label="Previous stay"
+                className="absolute left-5 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/65 bg-white/85 text-[#173321] backdrop-blur-sm transition-all duration-500 hover:scale-105"
+              >
+                ←
+              </button>
+
+              <button
+                type="button"
+                onClick={next}
+                aria-label="Next stay"
+                className="absolute right-5 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/65 bg-white/85 text-[#173321] backdrop-blur-sm transition-all duration-500 hover:scale-105"
+              >
+                →
+              </button>
+
+              <div className="absolute bottom-8 right-7 z-20 flex items-center gap-3 text-white">
+                <span className="font-jost text-[9px] tracking-[0.18em]">
+                  {String(activeIndex + 1).padStart(2, "0")}
+                </span>
+                <span className="h-px w-8 bg-white/55" />
+                <span className="font-jost text-[9px] tracking-[0.18em]">
+                  {String(stays.length).padStart(2, "0")}
+                </span>
+              </div>
+            </div>
+
+            {/* Editorial information panel */}
+            <div className="relative overflow-hidden bg-[#f2eee3]">
+              {/* This organic divider is SVG/CSS, not a background image. */}
+              <svg
+                className="pointer-events-none absolute -left-[86px] top-0 z-20 h-full w-[130px]"
+                viewBox="0 0 130 590"
+                preserveAspectRatio="none"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M130 0C72 72 64 135 83 194C103 256 103 319 72 370C41 421 31 481 59 590L130 590Z"
+                  fill="#f2eee3"
+                />
+                <path
+                  d="M130 0C72 72 64 135 83 194C103 256 103 319 72 370C41 421 31 481 59 590"
+                  stroke="#89965f"
+                  strokeWidth="1.4"
+                  opacity="0.75"
+                />
+              </svg>
+
+              <svg
+                className="pointer-events-none absolute bottom-[-25px] right-[-10px] h-[210px] w-[180px] opacity-[0.20]"
+                viewBox="0 0 180 210"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M142 208C125 163 110 121 76 86C60 70 48 49 45 19" stroke="#72804e" strokeWidth="1" />
+                <path d="M89 104C112 84 130 87 141 105C122 117 104 117 89 104Z" fill="#9ba876" />
+                <path d="M65 80C44 65 28 68 20 86C37 96 52 94 65 80Z" fill="#9ba876" />
+              </svg>
+
+              <div className="relative z-30 flex h-full min-h-[590px] flex-col px-8 py-10 sm:px-10">
+                <div
+                  key={`content-${activeStay.id}`}
+                  className={`flex flex-1 flex-col transition-all duration-600 ${
+                    isChanging ? "translate-y-3 opacity-0" : "translate-y-0 opacity-100"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="h-px w-7 bg-[#84934d]" />
+                    <span className="font-jost text-[8px] font-medium uppercase tracking-[0.28em] text-[#71804c]">
+                      {activeStay.eyebrow}
+                    </span>
+                    <span className="h-px w-7 bg-[#84934d]" />
+                  </div>
+
+                  <h3 className="mt-5 font-cormorant text-[42px] font-normal leading-[0.94] tracking-[-0.02em] text-[#173321] sm:text-[48px]">
+                    {activeStay.name}
+                  </h3>
+
+                  <p className="mt-5 max-w-[300px] font-lora text-[13px] leading-[1.7] text-[#687163]">
+                    {activeStay.description}
+                  </p>
+
+                  <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-5">
+                    {activeStay.features.map((feature, index) => (
+                      <div key={feature} className="flex items-center gap-3">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center text-[#52623d]">
+                          {index === 0 && (
+                            <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+                              <path d="M4 11V8C4 6.3 5.3 5 7 5H17C18.7 5 20 6.3 20 8V11M3 11H21V17H3V11ZM6 17V19M18 17V19" stroke="currentColor" strokeWidth="1.1" />
+                              <path d="M6 8H18" stroke="currentColor" strokeWidth="1.1" />
+                            </svg>
+                          )}
+                          {index === 1 && (
+                            <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+                              <path d="M4 4L20 4V18H4V4Z" stroke="currentColor" strokeWidth="1.1" />
+                              <path d="M4 4L12 11L20 4" stroke="currentColor" strokeWidth="1.1" />
+                            </svg>
+                          )}
+                          {index === 2 && (
+                            <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+                              <path d="M3 12C5 9 8 9 10 12C12 15 15 15 17 12C19 9 21 9 22 11" stroke="currentColor" strokeWidth="1.1" />
+                              <path d="M3 16H21" stroke="currentColor" strokeWidth="1.1" />
+                            </svg>
+                          )}
+                          {index === 3 && (
+                            <svg width="24" height="22" viewBox="0 0 24 22" fill="none">
+                              <path d="M12 20V8M12 13C8 12 6 9 6 6C9 6 11 8 12 13ZM12 16C16 15 18 12 18 9C15 9 13 11 12 16Z" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+                            </svg>
+                          )}
+                        </span>
+                        <span className="font-lora text-[11px] text-[#65705f]">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => onStaySelect?.(activeStay)}
+                    className="group mt-9 flex h-[48px] w-full max-w-[285px] items-center justify-between rounded-full bg-[#173321] pl-6 pr-2 text-[#f2eee3] shadow-[0_12px_30px_rgba(23,51,33,0.14)] transition-all duration-500 hover:bg-[#22452f]"
+                  >
+                    <span className="font-jost text-[9px] font-medium uppercase tracking-[0.24em]">
+                      Explore This Stay
+                    </span>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#c6d477] text-[#173321] transition-transform duration-500 group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </button>
+
+                  <div className="mt-auto pt-10">
+                    <div className="h-px w-full bg-[#173321]/10" />
+                    <div className="mt-5 flex items-end justify-between gap-5">
+                      <div>
+                        <span className="font-lora text-[11px] italic text-[#64705e]">Riverside calm</span>
+                        <span className="mx-2 text-[#8a975e]">·</span>
+                        <span className="font-lora text-[11px] italic text-[#64705e]">Tea gardens</span>
+                        <span className="mx-2 text-[#8a975e]">·</span>
+                        <span className="font-lora text-[11px] italic text-[#64705e]">Slow living</span>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="font-jost text-[9px] font-medium uppercase tracking-[0.32em] text-[#748046]">Paciano</p>
+                        <p className="mt-1 font-jost text-[6px] uppercase tracking-[0.28em] text-[#89917d]">Stay a little longer</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <p
-            className="
-        text-[10px]
-        tracking-[0.45em]
-        uppercase
-        text-[#68705F]
-      "
-          >
-            Paciano
-          </p>
-
-          <p
-            className="
-        mt-1
-        text-[8px]
-        tracking-[0.35em]
-        uppercase
-        text-[#8B907F]
-      "
-          >
-            Stay Close to Nature
-          </p>
         </div>
       </div>
-
-      {/* ========================================================
-          ANIMATIONS
-          Kept INSIDE component — no separate CSS file.
-      ======================================================== */}
 
       <style>
-        {`
+        {`          
+          /* ========================================================
+             PACIANO — icon choreography
+             Still before the section arrives; gently alive after scroll.
+             ======================================================== */
 
-          @keyframes roomEnter {
+          .paciano-stay-icon {
+            transform-origin: 50% 70%;
+            will-change: transform, opacity;
+          }
 
-      0% {
-        opacity: 0;
-        transform: scale(1.075);
-        filter: brightness(0.72) saturate(0.88);
-      }
+          .paciano-about-visible .paciano-stay-icon-0 {
+            animation: paciano-icon-float-0 5.8s ease-in-out infinite;
+            animation-delay: 0.10s;
+          }
 
-      18% {
-        opacity: 0.35;
-      }
+          .paciano-about-visible .paciano-stay-icon-1 {
+            animation: paciano-icon-float-1 6.4s ease-in-out infinite;
+            animation-delay: 0.45s;
+          }
 
-      55% {
-        opacity: 0.82;
-      }
+          .paciano-about-visible .paciano-stay-icon-2 {
+            animation: paciano-icon-float-2 7s ease-in-out infinite;
+            animation-delay: 0.80s;
+          }
 
-      100% {
-        opacity: 1;
-        transform: scale(1);
-        filter: brightness(1) saturate(1);
-      }
+          .paciano-about-visible .paciano-stay-icon-3 {
+            animation: paciano-icon-float-3 6.7s ease-in-out infinite;
+            animation-delay: 1.15s;
+          }
 
-    }
+          .paciano-about-visible .paciano-wave-1 {
+            animation: paciano-wave-1 4.8s ease-in-out infinite;
+            animation-delay: 0.15s;
+          }
 
-           @keyframes imageEnter {
+          .paciano-about-visible .paciano-wave-2 {
+            animation: paciano-wave-2 4.8s ease-in-out infinite;
+            animation-delay: 0.33s;
+          }
 
-      0% {
-        opacity: 0;
-        transform: scale(1.065);
-        filter: brightness(0.82);
-      }
+          .paciano-about-visible .paciano-wave-3 {
+            animation: paciano-wave-3 4.8s ease-in-out infinite;
+            animation-delay: 0.51s;
+          }
 
-      35% {
-        opacity: 0.7;
-      }
+          .paciano-about-visible .paciano-leaf-icon {
+            animation: paciano-leaf-breathe 5.6s ease-in-out infinite;
+            animation-delay: 0.45s;
+          }
 
-      100% {
-        opacity: 1;
-        transform: scale(1);
-        filter: brightness(1);
-      }
+          .paciano-about-visible .paciano-mountain-icon {
+            animation: paciano-mountain-breathe 6.2s ease-in-out infinite;
+            animation-delay: 0.80s;
+          }
 
-    }
+          .paciano-about-visible .paciano-family-icon {
+            animation: paciano-family-breathe 5.9s ease-in-out infinite;
+            animation-delay: 1.15s;
+          }
 
+          @keyframes paciano-icon-float-0 {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-1px); }
+          }
 
-         @keyframes contentEnter {
+          @keyframes paciano-icon-float-1 {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-1px) rotate(-1deg); }
+          }
 
-      0% {
-        opacity: 0;
-        transform: translateY(25px);
-        filter: blur(4px);
-      }
+          @keyframes paciano-icon-float-2 {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-1px); }
+          }
 
-      45% {
-        opacity: 0.5;
-        filter: blur(1px);
-      }
+          @keyframes paciano-icon-float-3 {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-1px) scale(1.008); }
+          }
 
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-        filter: blur(0);
-      }
+          @keyframes paciano-wave-1 {
+            0%, 100% { transform: translateX(0) scaleX(1); opacity: .72; }
+            50% { transform: translateX(1px) scaleX(1.025); opacity: .92; }
+          }
 
-    }
-      @keyframes mistReveal {
+          @keyframes paciano-wave-2 {
+            0%, 100% { transform: translateX(0) scaleX(1); opacity: .78; }
+            50% { transform: translateX(1.5px) scaleX(1.035); opacity: 1; }
+          }
 
-      0% {
-        opacity: 0;
-        transform: translateY(25px) scale(1.04);
-      }
+          @keyframes paciano-wave-3 {
+            0%, 100% { transform: translateX(0) scaleX(1); opacity: .72; }
+            50% { transform: translateX(1px) scaleX(1.025); opacity: .9; }
+          }
 
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+          @keyframes paciano-leaf-breathe {
+            0%, 100% { transform: rotate(0deg); }
+            35% { transform: rotate(-1.5deg); }
+            70% { transform: rotate(1deg); }
+          }
 
-    }
+          @keyframes paciano-mountain-breathe {
+            0%, 100% { transform: translateY(0) scaleY(1); }
+            50% { transform: translateY(-1px) scaleY(1.008); }
+          }
 
+          @keyframes paciano-family-breathe {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-1px) scale(1.012); }
+          }
 
+          .group:hover .paciano-stay-icon {
+            color: #596b3d;
+            opacity: 1;
+          }
 
           @media (prefers-reduced-motion: reduce) {
-
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-
-    }
-
-          @keyframes mistDrift {
-
-            0% {
-                transform: scale(1.04) translate3d(-12px, 0, 0);
+            .paciano-stay-icon,
+            .paciano-wave-line,
+            .paciano-leaf-icon,
+            .paciano-mountain-icon,
+            .paciano-family-icon {
+              animation: none !important;
             }
+          }
 
-            100% {
-                transform: scale(1.08) translate3d(12px, -4px, 0);
-            }
+          .paciano-stay-cta {
+            transition: transform 700ms cubic-bezier(.16, 1, .3, 1);
+          }
 
-            }
+          .paciano-stay-cta:hover {
+            transform: translateX(3px);
+          }
 
+          .paciano-stay-cta:focus-visible {
+            outline: 1px solid rgba(126, 140, 89, 0.65);
+            outline-offset: 5px;
+          }
 
-            @keyframes signatureFloat {
+          .paciano-intro-reveal {
+            opacity: 0;
+            transform: translateY(52px);
+            transition:
+              opacity 1.25s cubic-bezier(.16, 1, .3, 1),
+              transform 1.25s cubic-bezier(.16, 1, .3, 1);
+          }
 
-            0%,
-            100% {
-                transform: translateY(0);
-            }
+          .paciano-about-visible .paciano-intro-reveal {
+            opacity: 1;
+            transform: translateY(0);
+          }
 
-            50% {
-                transform: translateY(-5px);
-            }
+          .paciano-reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition:
+              opacity 1.2s cubic-bezier(.16, 1, .3, 1),
+              transform 1.2s cubic-bezier(.16, 1, .3, 1);
+          }
 
-            }
+          .paciano-about-visible .paciano-reveal {
+            opacity: 1;
+            transform: translateY(0);
+          }
 
-            @keyframes luxuryRoomDrift {
+          .paciano-delay-1 {
+            transition-delay: 0.2s;
+          }
 
-            0% {
-                transform: scale(1);
-            }
+          .paciano-delay-2 {
+            transition-delay: 0.45s;
+          }
 
-            100% {
-                transform: scale(1.035);
-            }
+          .paciano-delay-3 {
+            transition-delay: 0.7s;
+          }
 
-            }
-
-            @keyframes stayIconFloat {
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-3px) rotate(1deg);
-            }
-            }
-
-            @keyframes exploreBreath {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-3px);
-            }
-            }
-
-            @keyframes collectionFrame {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-2px);
-  }
-
-}
-
-
-/* =====================================================
-   UNDERLINE — SLOW BREATHING
-===================================================== */
-
-@keyframes collectionLine {
-
-  0%,
-  100% {
-    width: 52px;
-    opacity: 0.55;
-  }
-
-  50% {
-    width: 72px;
-    opacity: 0.9;
-  }
-
-}
-
-
-/* =====================================================
-   ARROW — CONTINUOUS LUXURY GLIDE
-===================================================== */
-
-@keyframes arrowGlide {
-
-  0% {
-    transform: translateX(-4px);
-    opacity: 0.55;
-  }
-
-  35% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-
-  65% {
-    transform: translateX(4px);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateX(-4px);
-    opacity: 0.55;
-  }
-
-}
-
-
-/* =====================================================
-   ARROW TRAIL
-===================================================== */
-
-@keyframes arrowTrail {
-
-  0% {
-    transform: translateX(-15px);
-    opacity: 0;
-  }
-
-  30% {
-    transform: translateX(0);
-    opacity: 0.65;
-  }
-
-  70% {
-    transform: translateX(12px);
-    opacity: 0;
-  }
-
-  100% {
-    transform: translateX(12px);
-    opacity: 0;
-  }
-
-}
-
-        `}
-      </style>
+          .paciano-delay-4 {
+            transition-delay: 0.95s;
+          }
+          
+          `}
+        </style>
     </section>
   );
 }
