@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import riversideRoom from "@/images/river-side-room.png";
 import riversideBalcony from "@/images/river-side-room.png";
@@ -19,159 +19,63 @@ import belowleafCta from "@/images/paciano-leaf-transparent.png";
 // TYPES
 // ============================================================
 
-type AmenityIconType = "bed" | "balcony" | "view" | "bath" | "wifi";
-
 type Stay = {
   id: string;
+  category: string;
   name: string;
-  eyebrow: string;
-  title: string;
   description: string;
-
   images: string[];
-
-  amenities: {
-    label: string;
-    icon: AmenityIconType;
-  }[];
+  features: string[];
+  eyebrow?: string;
 };
 
-// ============================================================
-// STAYS
-// ============================================================
-
-const stays: Stay[] = [
+const DEFAULT_STAYS: Stay[] = [
   {
     id: "riverside",
-    name: "Riverside Suite",
+    category: "Riverside Suite",
     eyebrow: "RIVERSIDE SUITE",
-    title: "Wake to Tranquility",
+    name: "Riverfront Serenity",
     description:
-      "Wake to the gentle rhythm of the river, framed by mountains and softened by the quiet of nature.",
-
+      "Wake to the gentle rhythm of the river and unwind in a space where modern comfort meets nature’s calm.",
     images: [riversideRoom, riversideBalcony, riversideDetail],
-
-    amenities: [
-      {
-        label: "King Bed",
-        icon: "bed",
-      },
-      {
-        label: "Private Balcony",
-        icon: "balcony",
-      },
-      {
-        label: "River & Mountain View",
-        icon: "view",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
-    ],
+    features: ["King Bed", "River View", "Private Balcony", "Outdoor Seating"],
   },
 
   {
     id: "garden",
-    name: "Garden Residence",
+    category: "Garden Residence",
     eyebrow: "GARDEN RESIDENCE",
-    title: "Wake Among Greenery",
+    name: "Garden Sanctuary",
     description:
-      "A peaceful retreat overlooking Paciano's gardens, where quiet mornings unfold beneath open skies and surrounding greenery.",
-
+      "A quiet residence surrounded by greenery, crafted for slow mornings, private moments and effortless comfort.",
     images: [gardenRoom, gardenView, gardenBalcony],
-
-    amenities: [
-      {
-        label: "King Bed",
-        icon: "bed",
-      },
-      {
-        label: "Garden Outlook",
-        icon: "view",
-      },
-      {
-        label: "Private Sitting Area",
-        icon: "balcony",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
-    ],
+    features: ["King Bed", "Garden View", "Private Terrace", "Outdoor Seating"],
   },
 
   {
     id: "valley",
-    name: "Valley Retreat",
+    category: "Valley Retreat",
     eyebrow: "VALLEY RETREAT",
-    title: "Closer to the Wild",
+    name: "Mountain Stillness",
     description:
-      "A quiet escape where mountain views stretch beyond the room and every morning begins a little slower.",
-    images: [riversideRoom, riversideDetail, riversideBalcony],
-    amenities: [
-      {
-        label: "King Bed",
-        icon: "bed",
-      },
-      {
-        label: "Private Balcony",
-        icon: "balcony",
-      },
-      {
-        label: "Valley View",
-        icon: "view",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
-    ],
+      "Open views, generous space and the stillness of the hills come together in a retreat made for deeper rest.",
+    images: [riversideDetail, gardenView],
+    features: ["King Bed", "Mountain View", "Private Balcony", "Lounge Area"],
   },
 
   {
     id: "family",
-    name: "Family Sanctuary",
+    category: "Family Sanctuary",
     eyebrow: "FAMILY SANCTUARY",
-    title: "Space to Be Together",
+    name: "A Place Together",
     description:
-      "Thoughtfully arranged for families, with generous space to slow down, reconnect and enjoy the landscape together.",
-
+      "Thoughtfully designed for togetherness, with room to breathe, reconnect and create unhurried memories.",
     images: [familyRoom, familyRoomTwo, familyView],
-
-    amenities: [
-      {
-        label: "Two Comfortable Beds",
-        icon: "bed",
-      },
-      {
-        label: "Spacious Interior",
-        icon: "balcony",
-      },
-      {
-        label: "Nature View",
-        icon: "view",
-      },
-      {
-        label: "Luxury Bathroom",
-        icon: "bath",
-      },
-      {
-        label: "Complimentary Wi-Fi",
-        icon: "wifi",
-      },
+    features: [
+      "2 King Beds",
+      "Garden View",
+      "Private Balcony",
+      "Family Lounge",
     ],
   },
 ];
@@ -277,24 +181,25 @@ export default function Accommodation() {
   // ============================================================
 
   useEffect(() => {
-    const element = sectionRef.current;
-
-    if (!element) return;
+    const section = sectionRef.current;
+    if (!section) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          setIsSectionVisible(true);
+          observer.disconnect();
+        }
       },
       {
-        threshold: 0.14,
+        threshold: 0.16,
+        rootMargin: "0px 0px -8% 0px",
       },
     );
 
-    observer.observe(element);
+    observer.observe(section);
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
   // ============================================================
@@ -463,95 +368,88 @@ export default function Accommodation() {
   return (
     <section
       ref={sectionRef}
-      id="stays"
-      className="
-        relative
-        overflow-hidden
-        bg-[#F4EDE1]
-        text-[#203127]
-      "
+      id="stay"
+      className={`relative overflow-hidden bg-[#f2eee3] px-5 py-24 sm:px-8 lg:px-14 xl:px-20 ${
+        isSectionVisible ? "paciano-about-visible" : ""
+      }`}
     >
-      {/* ========================================================
-          TOP CURVED TRANSITION FROM EXPERIENCES
-      ======================================================== */}
-
-      <div
-        className="
-          absolute
-          top-[-35px]
-          left-1/2
-          -translate-x-1/2
-          w-[125%]
-          h-[100px]
-          rounded-[0_0_50%_50%]
-          bg-[#F4EDE1]
-          z-20
-          pointer-events-none
-        "
-      />
-
-      {/* ========================================================
-          CENTER BOTANICAL MARK
-      ======================================================== */}
-
-      <div
-        className="
-          absolute
-          top-[58px]
-          left-1/2
-          -translate-x-1/2
-          z-30
-          text-[#75825F]
-        "
-      ></div>
-
-      {/* ========================================================
-          MAIN CONTENT
-      ======================================================== */}
-
-      <div
-        className="
-            relative
-            z-10
-            max-w-[1480px]
-            mx-auto
-            px-5
-            sm:px-8
-            lg:px-12
-            pt-[50px]
-            sm:pt-[58px]
-            lg:pt-[64px]
-            pb-[65px]
-        "
+      {/* Organic botanical background */}
+      <svg
+        className="pointer-events-none absolute -right-20 top-8 h-[360px] w-[300px] opacity-[0.16]"
+        viewBox="0 0 300 360"
+        fill="none"
+        aria-hidden="true"
       >
-        {/* ======================================================
-    STAYS INTRO
-====================================================== */}
+        <path
+          d="M258 12C229 86 220 155 237 214C248 253 264 300 277 348"
+          stroke="#74844a"
+          strokeWidth="1"
+        />
+        <path
+          d="M231 91C196 67 171 72 153 103C187 113 213 108 231 91Z"
+          fill="#8b9865"
+        />
+        <path
+          d="M226 145C260 116 284 121 297 150C271 165 247 164 226 145Z"
+          fill="#8b9865"
+        />
+        <path
+          d="M231 204C195 181 170 187 153 216C185 229 214 222 231 204Z"
+          fill="#8b9865"
+        />
+      </svg>
 
-        <div
-          className={`
-    relative
-    z-20
-    flex
-    flex-col
-    items-center
-    justify-center
-    text-center
-    transition-all
-    duration-[1200ms]
-    ease-[cubic-bezier(0.16,1,0.3,1)]
-    ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"}
-  `}
-        >
-          {/* Botanical mark */}
-
-          <div
-            className="
-      mb-3
-      text-[#71883F]
-    "
+      {/* Intro */}
+      <div className="relative z-10 mx-auto max-w-[1180px] text-center">
+        <div className="paciano-intro-reveal">
+          {/* Small botanical sprout above OUR STAYS */}
+          <div className="mb-3 flex justify-center">
+            {/* <svg
+            width="34"
+            height="30"
+            viewBox="0 0 34 30"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            className="overflow-visible"
           >
-            <svg width="25" height="25" viewBox="0 0 40 40" fill="none">
+            {/* stem
+            <path
+              d="M17 29C17 22 17 16 18.5 9"
+              stroke="#71803F"
+              strokeWidth="1"
+              strokeLinecap="round"
+            />
+
+            {/* left leaf 
+            <path
+              d="M17.8 13.2
+                C11.4 13.2 7.3 9.9 6.2 4.1
+                C12.4 4.2 17.2 7.1 17.8 13.2Z"
+              fill="#71803F"
+            />
+
+            {/* right leaf 
+            <path
+              d="M18.2 9.8
+                C20.1 4.2 24.2 1.8 29.3 2.5
+                C28.2 7.8 24.5 10.5 18.2 9.8Z"
+              fill="#71803F"
+            />
+          </svg> */}
+            <svg
+              viewBox="0 0 40 40"
+              className="
+          mx-auto
+          mb-[9px]
+
+          h-[25px]
+          w-[25px]
+
+          text-[#71883F]
+        "
+              fill="none"
+            >
               <path
                 d="M20 34C20 25 21 17 27 8"
                 stroke="currentColor"
@@ -560,10 +458,10 @@ export default function Accommodation() {
 
               <path
                 d="
-          M21 22
-          C15 20 12 16 13 11
-          C18 12 22 16 22 21
-        "
+            M21 22
+            C15 20 12 16 13 11
+            C18 12 22 16 22 21
+          "
                 fill="currentColor"
               />
 
