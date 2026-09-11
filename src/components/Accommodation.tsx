@@ -19,63 +19,154 @@ import belowleafCta from "@/images/paciano-leaf-transparent.png";
 // TYPES
 // ============================================================
 
+type AmenityIconType = "bed" | "balcony" | "view" | "bath" | "wifi";
+
 type Stay = {
   id: string;
-  category: string;
   name: string;
+  eyebrow: string;
+  title: string;
   description: string;
-  images: string[];
-  features: string[];
-  eyebrow?: string;
-};
 
-const DEFAULT_STAYS: Stay[] = [
+  images: string[];
+
+  amenities: {
+    label: string;
+    icon: AmenityIconType;
+  }[];
+};
+const stays: Stay[] = [
   {
     id: "riverside",
-    category: "Riverside Suite",
+    name: "Riverside Suite",
     eyebrow: "RIVERSIDE SUITE",
-    name: "Riverfront Serenity",
+    title: "Wake to Tranquility",
     description:
-      "Wake to the gentle rhythm of the river and unwind in a space where modern comfort meets nature’s calm.",
+      "Wake to the gentle rhythm of the river, framed by mountains and softened by the quiet of nature.",
+
     images: [riversideRoom, riversideBalcony, riversideDetail],
-    features: ["King Bed", "River View", "Private Balcony", "Outdoor Seating"],
+
+    amenities: [
+      {
+        label: "King Bed",
+        icon: "bed",
+      },
+      {
+        label: "Private Balcony",
+        icon: "balcony",
+      },
+      {
+        label: "River & Mountain View",
+        icon: "view",
+      },
+      {
+        label: "Luxury Bathroom",
+        icon: "bath",
+      },
+      {
+        label: "Complimentary Wi-Fi",
+        icon: "wifi",
+      },
+    ],
   },
 
   {
     id: "garden",
-    category: "Garden Residence",
+    name: "Garden Residence",
     eyebrow: "GARDEN RESIDENCE",
-    name: "Garden Sanctuary",
+    title: "Wake Among Greenery",
     description:
-      "A quiet residence surrounded by greenery, crafted for slow mornings, private moments and effortless comfort.",
+      "A peaceful retreat overlooking Paciano's gardens, where quiet mornings unfold beneath open skies and surrounding greenery.",
+
     images: [gardenRoom, gardenView, gardenBalcony],
-    features: ["King Bed", "Garden View", "Private Terrace", "Outdoor Seating"],
+
+    amenities: [
+      {
+        label: "King Bed",
+        icon: "bed",
+      },
+      {
+        label: "Garden Outlook",
+        icon: "view",
+      },
+      {
+        label: "Private Sitting Area",
+        icon: "balcony",
+      },
+      {
+        label: "Luxury Bathroom",
+        icon: "bath",
+      },
+      {
+        label: "Complimentary Wi-Fi",
+        icon: "wifi",
+      },
+    ],
   },
 
   {
     id: "valley",
-    category: "Valley Retreat",
+    name: "Valley Retreat",
     eyebrow: "VALLEY RETREAT",
-    name: "Mountain Stillness",
+    title: "Closer to the Wild",
     description:
-      "Open views, generous space and the stillness of the hills come together in a retreat made for deeper rest.",
-    images: [riversideDetail, gardenView],
-    features: ["King Bed", "Mountain View", "Private Balcony", "Lounge Area"],
+      "A quiet escape where mountain views stretch beyond the room and every morning begins a little slower.",
+    images: [riversideRoom, riversideDetail, riversideBalcony],
+    amenities: [
+      {
+        label: "King Bed",
+        icon: "bed",
+      },
+      {
+        label: "Private Balcony",
+        icon: "balcony",
+      },
+      {
+        label: "Valley View",
+        icon: "view",
+      },
+      {
+        label: "Luxury Bathroom",
+        icon: "bath",
+      },
+      {
+        label: "Complimentary Wi-Fi",
+        icon: "wifi",
+      },
+    ],
   },
 
   {
     id: "family",
-    category: "Family Sanctuary",
+    name: "Family Sanctuary",
     eyebrow: "FAMILY SANCTUARY",
-    name: "A Place Together",
+    title: "Space to Be Together",
     description:
-      "Thoughtfully designed for togetherness, with room to breathe, reconnect and create unhurried memories.",
+      "Thoughtfully arranged for families, with generous space to slow down, reconnect and enjoy the landscape together.",
+
     images: [familyRoom, familyRoomTwo, familyView],
-    features: [
-      "2 King Beds",
-      "Garden View",
-      "Private Balcony",
-      "Family Lounge",
+
+    amenities: [
+      {
+        label: "Two Comfortable Beds",
+        icon: "bed",
+      },
+      {
+        label: "Spacious Interior",
+        icon: "balcony",
+      },
+      {
+        label: "Nature View",
+        icon: "view",
+      },
+      {
+        label: "Luxury Bathroom",
+        icon: "bath",
+      },
+      {
+        label: "Complimentary Wi-Fi",
+        icon: "wifi",
+      },
     ],
   },
 ];
@@ -187,7 +278,7 @@ export default function Accommodation() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsSectionVisible(true);
+          setVisible(true);
           observer.disconnect();
         }
       },
@@ -201,7 +292,6 @@ export default function Accommodation() {
 
     return () => observer.disconnect();
   }, []);
-
   // ============================================================
   // CINEMATIC LANDSCAPE SCROLL PARALLAX
   // ============================================================
@@ -370,7 +460,7 @@ export default function Accommodation() {
       ref={sectionRef}
       id="stay"
       className={`relative overflow-hidden bg-[#f2eee3] px-5 py-24 sm:px-8 lg:px-14 xl:px-20 ${
-        isSectionVisible ? "paciano-about-visible" : ""
+        visible ? "paciano-about-visible" : ""
       }`}
     >
       {/* Organic botanical background */}
